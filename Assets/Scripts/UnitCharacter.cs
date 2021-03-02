@@ -10,6 +10,9 @@ using UnityEngine;
 
 public class UnitCharacter : MonoBehaviour
 {
+    [Header("武器位置")]
+    public Transform weaponPos;
+
     public Animator animator;
     public Rigidbody unitRigidbody;
     public CapsuleCollider unitCapsuleCollider;
@@ -59,11 +62,6 @@ public class UnitCharacter : MonoBehaviour
 
     [SerializeField]
     private float stayAirTime = 0;
-
-    private void Start()
-    {
-        Init();
-    }
 
     public void Init()
     {
