@@ -41,6 +41,21 @@ public class MoveSystem : JobComponentSystem
         }
     }
 
+
+    /*[BurstCompile]
+    struct MoveUpJob : IJobChunk
+    {
+        public float dt;
+
+        public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
+        {
+            for (int i = 0; i < chunk.Count; i++)
+            {
+
+            }
+        }
+    }*/
+
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         MoveJob job = new MoveJob()
@@ -50,6 +65,8 @@ public class MoveSystem : JobComponentSystem
             translationType = GetArchetypeChunkComponentType<Translation>(),
             moveSpeedType = GetArchetypeChunkComponentType<MoveSpeed>(true)
         };
+
+        Debug.Log(job);
 
         return job.Schedule(entityQuery, inputDeps);
     }

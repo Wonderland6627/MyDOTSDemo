@@ -49,5 +49,18 @@ public class RotateSystem : JobComponentSystem
         };
 
         return job.Schedule(entityQuery, inputDeps);
+
+        /*Entities
+            .WithoutBurst()
+            .ForEach((ref RotateSpeed rotationSpeed, ref Rotation rotation) =>
+        {
+            var deltaTime = Time.DeltaTime;
+
+            //旋转Cube，代码逻辑不用管，这里可以是其他任何逻辑
+            rotation.Value = math.mul(math.normalize(rotation.Value),
+                quaternion.AxisAngle(math.up(), rotationSpeed.Value * deltaTime));
+        }).Run();
+
+        return default;*/
     }
 }
