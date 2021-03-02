@@ -66,7 +66,7 @@ public class MoveSystem : JobComponentSystem
             moveSpeedType = GetArchetypeChunkComponentType<MoveSpeed>(true)
         };
 
-        Debug.Log(job);
+        //Debug.Log(job);
 
         return job.Schedule(entityQuery, inputDeps);
     }
