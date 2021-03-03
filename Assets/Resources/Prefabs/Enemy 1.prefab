@@ -124,5 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92307261df018604096e4d7b4042ff7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 100
+  rotateSpeed: 20
   enemyHealth: 20
   collisionRadius: 2.5

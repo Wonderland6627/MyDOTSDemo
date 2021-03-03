@@ -27,7 +27,10 @@ public class EnemyConversion : MonoBehaviour, IConvertGameObjectToEntity
         EntityCollision collision = new EntityCollision() { Radius = collisionRadius };
         dstManager.AddComponentData(entity, collision);
 
-        MoveSpeed speed = new MoveSpeed() { Value = moveSpeed };
-        dstManager.AddComponentData(entity, speed);
+        MoveSpeed move = new MoveSpeed() { Value = moveSpeed };
+        dstManager.AddComponentData(entity, move);
+
+        RotateSpeed rotate = new RotateSpeed() { Value = rotateSpeed };
+        dstManager.AddComponentData(entity, rotate);
     }
 }

@@ -7,17 +7,9 @@ using Unity.Jobs;
 using Unity.Burst;
 using Unity.Mathematics;
 
+
 public class EnemyMoveSystem : JobComponentSystem
 {
-    private EntityQuery enemyGroup;
-
-    protected override void OnCreate()
-    {
-        base.OnCreate();
-
-        enemyGroup = GetEntityQuery(typeof(Translation), typeof(Rotation), typeof(MoveSpeed), ComponentType.ReadOnly<EnemyTag>());
-    }
-
     [BurstCompile]
     struct MoveJob : IJobForEach<Translation, Rotation, MoveSpeed>
     {
@@ -29,7 +21,6 @@ public class EnemyMoveSystem : JobComponentSystem
         }
     }
 
-
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         MoveJob job = new MoveJob()
@@ -37,6 +28,6 @@ public class EnemyMoveSystem : JobComponentSystem
             deltaTime = Time.DeltaTime,
         };
 
-        return job.Schedule(enemyGroup, inputDeps);
+        return job.Schedule(this, inputDeps);
     }
 }
