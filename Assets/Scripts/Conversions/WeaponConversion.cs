@@ -5,6 +5,7 @@ using Unity.Entities;
 
 public class WeaponConversion : MonoBehaviour, IConvertGameObjectToEntity
 {
+    [Header("武器碰撞半径")]
     public float collisionRadius = 1;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)

@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 
 [GenerateAuthoringComponent]
-public struct RotateSpeed : IComponentData
+public struct TestRotateSpeed : IComponentData
 {
     public float Value;
 }

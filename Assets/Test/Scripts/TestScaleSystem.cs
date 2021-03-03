@@ -8,7 +8,8 @@ using Unity.Burst;
 using Unity.Mathematics;
 using Unity.Collections;
 
-public class ScaleSystem : JobComponentSystem
+[DisableAutoCreation]
+public class TestScaleSystem : JobComponentSystem
 {
     /// <summary>
     /// 筛选 查找所有带有设定的Entity 所以一开始Scale不好用就是因为压根没有Scale属性

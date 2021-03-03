@@ -8,13 +8,14 @@ using Unity.Burst;
 using Unity.Mathematics;
 using Unity.Collections;
 
-public class MoveSystem : JobComponentSystem
+[DisableAutoCreation]
+public class TestMoveSystem : JobComponentSystem
 {
     private EntityQuery entityQuery;//实体查询
 
     protected override void OnCreate()
     {
-        entityQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<MoveSpeed>());
+        entityQuery = GetEntityQuery(typeof(Translation), ComponentType.ReadOnly<TestMoveSpeed>());
     }
 
     [BurstCompile]
@@ -23,7 +24,7 @@ public class MoveSystem : JobComponentSystem
         public float dt;
         public float3 direction;
         public ArchetypeChunkComponentType<Translation> translationType;
-        [ReadOnly] public ArchetypeChunkComponentType<MoveSpeed> moveSpeedType;
+        [ReadOnly] public ArchetypeChunkComponentType<TestMoveSpeed> moveSpeedType;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
@@ -63,7 +64,7 @@ public class MoveSystem : JobComponentSystem
             dt = UnityEngine.Time.deltaTime,
             direction = new float3(0, 0, 1),
             translationType = GetArchetypeChunkComponentType<Translation>(),
-            moveSpeedType = GetArchetypeChunkComponentType<MoveSpeed>(true)
+            moveSpeedType = GetArchetypeChunkComponentType<TestMoveSpeed>(true)
         };
 
         //Debug.Log(job);

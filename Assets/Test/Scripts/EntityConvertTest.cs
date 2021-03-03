@@ -10,8 +10,8 @@ public class EntityConvertTest : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        MoveSpeed move = new MoveSpeed { Value = moveSpeed };
-        RotateSpeed rotate = new RotateSpeed { Value = rotateSpeed };
+        TestMoveSpeed move = new TestMoveSpeed { Value = moveSpeed };
+        TestRotateSpeed rotate = new TestRotateSpeed { Value = rotateSpeed };
 
         dstManager.AddComponentData(entity, move);
         dstManager.AddComponentData(entity, rotate);

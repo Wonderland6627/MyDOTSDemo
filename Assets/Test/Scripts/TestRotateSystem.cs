@@ -8,13 +8,14 @@ using Unity.Jobs;
 using Unity.Collections;
 using Unity.Burst;
 
-public class RotateSystem : JobComponentSystem
+[DisableAutoCreation]
+public class TestRotateSystem : JobComponentSystem
 {
     private EntityQuery entityQuery;
 
     protected override void OnCreate()
     {
-        entityQuery = GetEntityQuery(typeof(Rotation), ComponentType.ReadOnly<RotateSpeed>());
+        entityQuery = GetEntityQuery(typeof(Rotation), ComponentType.ReadOnly<TestRotateSpeed>());
     }
 
     [BurstCompile]
@@ -22,7 +23,7 @@ public class RotateSystem : JobComponentSystem
     {
         public float dt;
         public ArchetypeChunkComponentType<Rotation> rotationType;
-        [ReadOnly] public ArchetypeChunkComponentType<RotateSpeed> rotateSpeedType;
+        [ReadOnly] public ArchetypeChunkComponentType<TestRotateSpeed> rotateSpeedType;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
@@ -45,7 +46,7 @@ public class RotateSystem : JobComponentSystem
         {
             dt = Time.DeltaTime,
             rotationType = GetArchetypeChunkComponentType<Rotation>(),
-            rotateSpeedType = GetArchetypeChunkComponentType<RotateSpeed>()
+            rotateSpeedType = GetArchetypeChunkComponentType<TestRotateSpeed>()
         };
 
         return job.Schedule(entityQuery, inputDeps);
