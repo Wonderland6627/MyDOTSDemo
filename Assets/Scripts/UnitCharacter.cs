@@ -22,8 +22,6 @@ public class UnitCharacter : MonoBehaviour
     [Header("是否冲刺")]
     public bool isSprinting = false;
 
-    [Header("移动速度")]
-    public float moveSpeed;
     [Header("转向速度")]
     public float moveTurnSpeed = 360;
     [Header("静止转向速度")]

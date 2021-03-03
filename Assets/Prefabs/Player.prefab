@@ -790,6 +790,8 @@ GameObject:
   - component: {fileID: 1284264807959664594}
   - component: {fileID: 1284264806738724267}
   - component: {fileID: 1284264807959664593}
+  - component: {fileID: 1339568487}
+  - component: {fileID: 1339568488}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -824,7 +826,7 @@ Animator:
   m_GameObject: {fileID: 1284264806738724276}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9f9fac72b36530641b0b2d4029aeaa3b, type: 3}
-  m_Controller: {fileID: 9100000, guid: e2cf68ff4b1ffda45a77f7307dd789b9, type: 2}
+  m_Controller: {fileID: 9100000, guid: f63a06882418ef949b4513129b4a3c44, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -919,6 +921,33 @@ MonoBehaviour:
   groundMaxDistance: 0.5
   groundDistance: 0
   stayAirTime: 0
+--- !u!114 &1339568487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284264806738724276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb51aa16fac7364ca409ebd7706e87c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerHealth: 100
+  collisionRadius: 1
+--- !u!114 &1339568488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284264806738724276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConversionMode: 1
 --- !u!1 &1284264806738724278
 GameObject:
   m_ObjectHideFlags: 0
