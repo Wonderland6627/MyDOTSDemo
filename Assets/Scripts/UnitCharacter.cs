@@ -8,6 +8,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
+public class WeaponSkill
+{
+    public AnimationClip attackClip01;
+    public AnimationClip attackClip02;
+    public AnimationClip attackClip03;
+    public AnimationClip heavyAttackClip;
+
+    public string toString()
+    {
+        return string.Format("{0}-{1}-{2}-{3}",
+            attackClip01.name, attackClip02.name, attackClip03.name, heavyAttackClip.name);
+    }
+}
+
+/// <summary>
+/// 特效类
+/// </summary>
+[Serializable]
+public class SkillVFX
+{
+    public string vfxKey;
+    public GameObject effectGo;
+    public bool useLocalPosition = true;
+    public float cd = 10f;
+}
+
 public class UnitCharacter : MonoBehaviour
 {
     [Header("武器位置")]
@@ -17,6 +44,7 @@ public class UnitCharacter : MonoBehaviour
     public Rigidbody unitRigidbody;
     public CapsuleCollider unitCapsuleCollider;
 
+    #region MovePart
     [Header("在地面上")]
     public bool isGrounded = true;//是否站在地上
     [Header("是否冲刺")]
@@ -60,6 +88,21 @@ public class UnitCharacter : MonoBehaviour
 
     [SerializeField]
     private float stayAirTime = 0;
+    #endregion
+
+    #region AttackPart
+    public List<SkillVFX> skillVFXList;
+
+    public Transform attackVFXPos;//攻击特效释放位置
+    public LayerMask aimLayerMask;
+
+    public float inAttackTime = 0;//在连击中的时间
+    public bool inAttackCombo;//是否连击
+    public bool heavyAttack;
+    public float skillsDuration;//整个连击所需时间，按键时间大于这个 重新开始或者结束连击
+
+    private AnimatorOverrideController overrideController;
+    #endregion
 
     public void Init()
     {
@@ -71,6 +114,11 @@ public class UnitCharacter : MonoBehaviour
         capsuleHeight = unitCapsuleCollider.height;
 
         defaultGroundCheckDistance = groundCheckDistance;
+
+        overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+        animator.runtimeAnimatorController = overrideController;
+
+        SetupSkillInfos();
     }
 
     public virtual void MoveCharacter(Vector3 direction, bool jump, bool sprint)
@@ -244,6 +292,74 @@ public class UnitCharacter : MonoBehaviour
             unitRigidbody.velocity = v;
         }
     }
+
+
+    private void UpdateAnimatorClips(WeaponSkill weaponSkill)
+    {
+        overrideController[AnimatorParams.AttackClip01] = weaponSkill.attackClip01;
+        overrideController[AnimatorParams.AttackClip02] = weaponSkill.attackClip02;
+        overrideController[AnimatorParams.AttackClip03] = weaponSkill.attackClip03;
+        overrideController[AnimatorParams.HeavyAttackClip] = weaponSkill.heavyAttackClip;
+        SetupSkillInfos();
+    }
+
+    public void ComboAttack(bool attack, bool heavyAttack)
+    {
+        if (attack && inAttackTime < skillsDuration)
+        {
+            inAttackCombo = true;
+            inAttackTime += Time.deltaTime;
+        }
+        else
+        {
+            inAttackTime = 0;
+            inAttackCombo = false;
+        }
+
+        this.heavyAttack = heavyAttack;
+        UpdateAnimator(inAttackCombo, heavyAttack);
+    }
+
+    /// <summary>
+    /// 计算连招总时间
+    /// </summary>
+    private void SetupSkillInfos()
+    {
+        inAttackCombo = false;
+        skillsDuration = 0;
+        skillsDuration += overrideController[AnimatorParams.AttackClip01].length;
+        skillsDuration += overrideController[AnimatorParams.AttackClip02].length;
+        skillsDuration += overrideController[AnimatorParams.AttackClip03].length;
+    }
+
+    #region SkillVFX
+
+    private void ReleaseSkill()
+    {
+        ReleaseSkillVFX("Attack_0");
+    }
+
+    private void ReleaseSkillVFX(string vfxKey)
+    {
+        SkillVFX skillVFX = skillVFXList.Find((vfx) => { return vfx.vfxKey == vfxKey; });
+        if (skillVFX == null)
+        {
+            Debug.Log("未找到技能特效:" + vfxKey);
+
+            return;
+        }
+
+        GameObject vfxInstance = Instantiate(skillVFX.effectGo) as GameObject;
+        vfxInstance.gameObject.name = vfxKey;
+        attackVFXPos.position = GameWorld.GetInstance().GetCurrentWeaponPos();
+        
+        vfxInstance.transform.position = attackVFXPos.position;
+        vfxInstance.transform.rotation = transform.rotation;
+
+        Debug.Log(string.Format("释放技能:{0}", vfxKey));
+    }
+
+    #endregion
 }
 
 public static partial class AnimatorParams
@@ -256,4 +372,13 @@ public static partial class AnimatorParams
 
     public static int HeavyAttack = Animator.StringToHash("HeavyAttack");
     public static int InAttackCombo = Animator.StringToHash("InAttackCombo");
+
+    public const int BaseLayer = 0;
+    public const int UpperBodyLayer = 1;
+    public const int BelowBodyLayer = 2;
+
+    public static string AttackClip01 = "Attack_01";
+    public static string AttackClip02 = "Attack_02";
+    public static string AttackClip03 = "Attack_03";
+    public static string HeavyAttackClip = "HeavyAttack";
 }

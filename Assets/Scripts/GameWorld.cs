@@ -63,6 +63,7 @@ public class GameWorld : MonoBehaviour
             return player;
         }
     }
+    public Entity CurrentWeapon;
 
     private GameObject enemyPrefab;
     private GameObject weaponPrefab;
@@ -85,11 +86,11 @@ public class GameWorld : MonoBehaviour
 
         Player.Init();
 
-        for (int i = 0; i < 34000; i++)
-        {
-            CreateEnemyEntity();
-        }
-        CreateWeaponEntity();
+        //for (int i = 0; i < 34000; i++)
+        //{
+        //    CreateEnemyEntity();
+        //}
+        CurrentWeapon = CreateWeaponEntity();
 
         /*var sword = CreateWeaponEntity();
         entityManager.SetComponentData(sword, new Translation { Value = new Unity.Mathematics.float3(3, 3, 3) });*/
@@ -116,6 +117,17 @@ public class GameWorld : MonoBehaviour
         entityManager.SetComponentData(enemy, new Translation() { Value = randomPos });
 
         return enemy;
+    }
+
+    public Vector3 GetCurrentWeaponPos()
+    {
+        if (CurrentWeapon == null)
+        {
+            return Player.transform.position;
+        }
+
+        Translation translation = entityManager.GetComponentData<Translation>(CurrentWeapon);
+        return translation.Value;
     }
 
     public void Clear()

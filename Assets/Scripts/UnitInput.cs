@@ -19,6 +19,7 @@ public class UnitInput : MonoBehaviour
     [SerializeField] private float attackDeltaTime;
 
     [SerializeField] private bool isAttacking;
+    [SerializeField] private bool isHeavyAttacking;
 
     [SerializeField] private Vector3 camForward;
 
@@ -37,6 +38,10 @@ public class UnitInput : MonoBehaviour
                 isJump = true;
             }
         }
+
+        isAttacking = Input.GetMouseButton(0);
+        isHeavyAttacking = Input.GetMouseButtonDown(1);
+        player.ComboAttack(isAttacking, isHeavyAttacking);
     }
 
     private void FixedUpdate()
