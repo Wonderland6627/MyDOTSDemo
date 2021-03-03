@@ -64,32 +64,58 @@ public class GameWorld : MonoBehaviour
         }
     }
 
-    private EntityManager entityManager;
+    private GameObject enemyPrefab;
+    private GameObject weaponPrefab;
 
-    private void Start()
-    {
-        Init();
-    }
+    private Entity enemyEntity;
+    private Entity weaponEntity;
+
+    private EntityManager entityManager;
 
     public void Init()
     {
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+
+        enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy 1");
+        weaponPrefab = Resources.Load<GameObject>("Prefabs/Sword");
+
+        enemyEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(enemyPrefab, settings);
+        weaponEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(weaponPrefab, settings);
 
         Player.Init();
+
+        for (int i = 0; i < 34000; i++)
+        {
+            CreateEnemyEntity();
+        }
         CreateWeaponEntity();
+
+        /*var sword = CreateWeaponEntity();
+        entityManager.SetComponentData(sword, new Translation { Value = new Unity.Mathematics.float3(3, 3, 3) });*/
     }
 
     /// <summary>
     /// 创建一个武器实体 并为其绑定WeaponTag
     /// </summary>
-    private void CreateWeaponEntity()
+    private Entity CreateWeaponEntity()
     {
-        GameObject swordRes = Resources.Load<GameObject>("Prefabs/Sword");
-        var settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
-        Entity swordEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(swordRes, settings);
-        Entity sword = entityManager.Instantiate(swordEntity);
-        entityManager.AddComponent<WeaponTag>(sword);
-        entityManager.SetComponentData(sword, new Translation { Value = Player.weaponPos.position });
+        Entity weapon = entityManager.Instantiate(weaponEntity);
+        entityManager.SetComponentData(weapon, new Translation { Value = Player.weaponPos.position });
+
+        return weapon;
+    }
+
+    private Entity CreateEnemyEntity()
+    {
+        float randX = UnityEngine.Random.Range(0, 2048f);
+        float randZ = UnityEngine.Random.Range(0, 2048f);
+        Vector3 randomPos = new Vector3(randX, 0, randZ);
+
+        Entity enemy = entityManager.Instantiate(enemyEntity);
+        entityManager.SetComponentData(enemy, new Translation() { Value = randomPos });
+
+        return enemy;
     }
 
     public void Clear()
