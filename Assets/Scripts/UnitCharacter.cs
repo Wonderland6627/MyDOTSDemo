@@ -349,12 +349,17 @@ public class UnitCharacter : MonoBehaviour
             return;
         }
 
-        GameObject vfxInstance = Instantiate(skillVFX.effectGo) as GameObject;
+        /*GameObject vfxInstance = Instantiate(skillVFX.effectGo) as GameObject;
         vfxInstance.gameObject.name = vfxKey;
-        attackVFXPos.position = GameWorld.GetInstance().GetCurrentWeaponPos();
+        //attackVFXPos.position = GameWorld.GetInstance().GetCurrentWeaponPos();
+        vfxInstance.transform.SetParent(attackVFXPos);
+        vfxInstance.transform.localPosition = Vector3.zero;
+        vfxInstance.transform.localEulerAngles = Vector3.zero;
         
-        vfxInstance.transform.position = attackVFXPos.position;
-        vfxInstance.transform.rotation = transform.rotation;
+        vfxInstance.transform.SetParent(null);
+        vfxInstance.transform.LookAt(transform.forward * 10);
+        //vfxInstance.GetComponent<Rigidbody>().AddForce(attackVFXPos.forward * 10);*/
+        GameWorld.GetInstance().CreateSkillVfxEntity(skillVFX.effectGo, attackVFXPos, transform.rotation);
 
         Debug.Log(string.Format("释放技能:{0}", vfxKey));
     }

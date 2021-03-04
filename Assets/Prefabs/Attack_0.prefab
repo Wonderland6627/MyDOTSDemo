@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6521052483008346937}
   - component: {fileID: 5257795992008585502}
   - component: {fileID: 2598547345129385793}
-  - component: {fileID: 8343348111749941224}
+  - component: {fileID: 7452516427631119817}
   m_Layer: 0
   m_Name: Attack_0
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &8343348111749941224
+--- !u!114 &7452516427631119817
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,4 +92,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef641a19059cf1a41bd50b0683f99c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.1
+  speed: 5

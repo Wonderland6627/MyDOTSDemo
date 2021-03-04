@@ -67,33 +67,35 @@ public class GameWorld : MonoBehaviour
 
     private GameObject enemyPrefab;
     private GameObject weaponPrefab;
+    private GameObject skillVfxPrefab;
 
     private Entity enemyEntity;
     private Entity weaponEntity;
+    private Entity skillVfxEntity;
 
     private EntityManager entityManager;
+    private GameObjectConversionSettings settings;
 
     public void Init()
     {
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        GameObjectConversionSettings settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+        settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
 
         enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy 1");
         weaponPrefab = Resources.Load<GameObject>("Prefabs/Sword");
+        skillVfxPrefab = Resources.Load<GameObject>("Prefabs/SkillVFX");
 
         enemyEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(enemyPrefab, settings);
         weaponEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(weaponPrefab, settings);
+        skillVfxEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(skillVfxPrefab, settings);
 
         Player.Init();
 
-        //for (int i = 0; i < 34000; i++)
-        //{
-        //    CreateEnemyEntity();
-        //}
+        for (int i = 0; i < 34000; i++)
+        {
+            CreateEnemyEntity();
+        }
         CurrentWeapon = CreateWeaponEntity();
-
-        /*var sword = CreateWeaponEntity();
-        entityManager.SetComponentData(sword, new Translation { Value = new Unity.Mathematics.float3(3, 3, 3) });*/
     }
 
     /// <summary>
@@ -117,6 +119,26 @@ public class GameWorld : MonoBehaviour
         entityManager.SetComponentData(enemy, new Translation() { Value = randomPos });
 
         return enemy;
+    }
+
+    public Entity CreateSkillVfxEntity()
+    {
+        Entity skillVfx = entityManager.Instantiate(skillVfxEntity);
+        //entityManager.SetComponentData(skillVfx, new Translation {  });
+        return skillVfx;
+    }
+
+    public Entity CreateSkillVfxEntity(GameObject goPrefab, Transform startPos, Quaternion startQuaterion)
+    {
+        var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(goPrefab, settings);
+        var skillVfx = entityManager.Instantiate(entity);
+        entityManager.AddComponent(skillVfx, typeof(SkillVFXTag));
+        entityManager.AddComponentData(skillVfx, new EntityCollision() { Radius = 1 });
+        entityManager.AddComponentData(skillVfx, new MoveSpeed() { Value = 10 });
+        entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos.position });
+        entityManager.SetComponentData(skillVfx, new Rotation() { Value = startQuaterion });
+
+        return skillVfx;
     }
 
     public Vector3 GetCurrentWeaponPos()

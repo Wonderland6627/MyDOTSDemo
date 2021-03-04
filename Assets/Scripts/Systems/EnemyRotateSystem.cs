@@ -7,6 +7,7 @@ using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Burst;
 
+[DisableAutoCreation]
 public class EnemyRotateSystem : JobComponentSystem
 {
     [BurstCompile]

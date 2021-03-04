@@ -12,7 +12,7 @@ public class EntityCollisionSystem : JobComponentSystem
 {
     private EntityQuery playerGroup;
     private EntityQuery weaponGroup;
-
+    private EntityQuery skillVfxGroup;
     private EntityQuery enemyGroup;
 
     protected override void OnCreate()
@@ -21,6 +21,7 @@ public class EntityCollisionSystem : JobComponentSystem
 
         playerGroup = GetEntityQuery(typeof(EntityHealth), typeof(EntityCollision), typeof(Translation), typeof(Rotation), ComponentType.ReadOnly<PlayerTag>());
         enemyGroup = GetEntityQuery(typeof(EntityHealth), typeof(EntityCollision), typeof(Translation), typeof(Rotation), ComponentType.ReadOnly<EnemyTag>());
+        skillVfxGroup = GetEntityQuery(typeof(Translation), typeof(EntityCollision), ComponentType.ReadOnly<SkillVFXTag>());
         weaponGroup = GetEntityQuery(typeof(Translation), typeof(EntityCollision), typeof(Rotation), ComponentType.ReadOnly<WeaponTag>());
     }
 
@@ -71,15 +72,25 @@ public class EntityCollisionSystem : JobComponentSystem
         var translationType = GetArchetypeChunkComponentType<Translation>();
         var healthType = GetArchetypeChunkComponentType<EntityHealth>();
 
-        CollsionJob job = new CollsionJob
+        CollsionJob weaponCollisionJob = new CollsionJob
         {
             radius = 2,
             translationType = translationType,
             entitiesHealthType = healthType,
             otherTranslationsArray = weaponGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
         };
+        weaponCollisionJob.Schedule(enemyGroup, inputDeps).Complete();
 
-        return job.Schedule(enemyGroup, inputDeps);
+        CollsionJob skillVfxCollisionJob = new CollsionJob
+        {
+            radius = 3,
+            translationType = translationType,
+            entitiesHealthType = healthType,
+            otherTranslationsArray = skillVfxGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
+        };
+
+        return skillVfxCollisionJob.Schedule(enemyGroup, inputDeps);
+
         return default;
     }
 
