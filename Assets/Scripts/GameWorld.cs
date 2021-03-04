@@ -128,10 +128,7 @@ public class GameWorld : MonoBehaviour
 
         var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(vfxPrefab, settings);
         var skillVfx = entityManager.Instantiate(entity);
-        entityManager.SetName(skillVfx, goPrefabName);
-        entityManager.AddComponent(skillVfx, typeof(SkillVFXTag));
-        entityManager.AddComponentData(skillVfx, new EntityCollision() { Radius = 1 });
-        entityManager.AddComponentData(entity, new DistanceRecord() { Distance = 0 });
+        entityManager.SetName(skillVfx, goPrefabName);       
         entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos.position });
         entityManager.SetComponentData(skillVfx, new Rotation() { Value = startQuaterion });
 
