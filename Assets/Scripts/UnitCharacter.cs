@@ -8,33 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class WeaponSkill
-{
-    public AnimationClip attackClip01;
-    public AnimationClip attackClip02;
-    public AnimationClip attackClip03;
-    public AnimationClip heavyAttackClip;
-
-    public string toString()
-    {
-        return string.Format("{0}-{1}-{2}-{3}",
-            attackClip01.name, attackClip02.name, attackClip03.name, heavyAttackClip.name);
-    }
-}
-
-/// <summary>
-/// 特效类
-/// </summary>
-[Serializable]
-public class SkillVFX
-{
-    public string vfxKey;
-    public GameObject effectGo;
-    public bool useLocalPosition = true;
-    public float cd = 10f;
-}
-
 public class UnitCharacter : MonoBehaviour
 {
     [Header("武器位置")]
@@ -91,8 +64,6 @@ public class UnitCharacter : MonoBehaviour
     #endregion
 
     #region AttackPart
-    public List<SkillVFX> skillVFXList;
-
     public Transform attackVFXPos;//攻击特效释放位置
     public LayerMask aimLayerMask;
 
@@ -293,16 +264,6 @@ public class UnitCharacter : MonoBehaviour
         }
     }
 
-
-    private void UpdateAnimatorClips(WeaponSkill weaponSkill)
-    {
-        overrideController[AnimatorParams.AttackClip01] = weaponSkill.attackClip01;
-        overrideController[AnimatorParams.AttackClip02] = weaponSkill.attackClip02;
-        overrideController[AnimatorParams.AttackClip03] = weaponSkill.attackClip03;
-        overrideController[AnimatorParams.HeavyAttackClip] = weaponSkill.heavyAttackClip;
-        SetupSkillInfos();
-    }
-
     public void ComboAttack(bool attack, bool heavyAttack)
     {
         if (attack && inAttackTime < skillsDuration)
@@ -339,29 +300,11 @@ public class UnitCharacter : MonoBehaviour
         ReleaseSkillVFX("Attack_0");
     }
 
-    private void ReleaseSkillVFX(string vfxKey)
-    {
-        SkillVFX skillVFX = skillVFXList.Find((vfx) => { return vfx.vfxKey == vfxKey; });
-        if (skillVFX == null)
-        {
-            Debug.Log("未找到技能特效:" + vfxKey);
+    private void ReleaseSkillVFX(string vfxGoName)
+    {      
+        GameWorld.GetInstance().CreateSkillVfxEntity(vfxGoName, attackVFXPos, transform.rotation);
 
-            return;
-        }
-
-        /*GameObject vfxInstance = Instantiate(skillVFX.effectGo) as GameObject;
-        vfxInstance.gameObject.name = vfxKey;
-        //attackVFXPos.position = GameWorld.GetInstance().GetCurrentWeaponPos();
-        vfxInstance.transform.SetParent(attackVFXPos);
-        vfxInstance.transform.localPosition = Vector3.zero;
-        vfxInstance.transform.localEulerAngles = Vector3.zero;
-        
-        vfxInstance.transform.SetParent(null);
-        vfxInstance.transform.LookAt(transform.forward * 10);
-        //vfxInstance.GetComponent<Rigidbody>().AddForce(attackVFXPos.forward * 10);*/
-        GameWorld.GetInstance().CreateSkillVfxEntity(skillVFX.effectGo, attackVFXPos, transform.rotation);
-
-        Debug.Log(string.Format("释放技能:{0}", vfxKey));
+        Debug.Log(string.Format("释放技能:{0}", vfxGoName));
     }
 
     #endregion

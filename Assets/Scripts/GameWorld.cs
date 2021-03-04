@@ -67,11 +67,9 @@ public class GameWorld : MonoBehaviour
 
     private GameObject enemyPrefab;
     private GameObject weaponPrefab;
-    private GameObject skillVfxPrefab;
 
     private Entity enemyEntity;
     private Entity weaponEntity;
-    private Entity skillVfxEntity;
 
     private EntityManager entityManager;
     private GameObjectConversionSettings settings;
@@ -83,11 +81,9 @@ public class GameWorld : MonoBehaviour
 
         enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy 1");
         weaponPrefab = Resources.Load<GameObject>("Prefabs/Sword");
-        skillVfxPrefab = Resources.Load<GameObject>("Prefabs/SkillVFX");
 
         enemyEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(enemyPrefab, settings);
         weaponEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(weaponPrefab, settings);
-        skillVfxEntity = GameObjectConversionUtility.ConvertGameObjectHierarchy(skillVfxPrefab, settings);
 
         Player.Init();
 
@@ -104,6 +100,7 @@ public class GameWorld : MonoBehaviour
     private Entity CreateWeaponEntity()
     {
         Entity weapon = entityManager.Instantiate(weaponEntity);
+        entityManager.SetName(weapon, "PlayerWeapon");
         entityManager.SetComponentData(weapon, new Translation { Value = Player.weaponPos.position });
 
         return weapon;
@@ -111,8 +108,8 @@ public class GameWorld : MonoBehaviour
 
     private Entity CreateEnemyEntity()
     {
-        float randX = UnityEngine.Random.Range(0, 2048f);
-        float randZ = UnityEngine.Random.Range(0, 2048f);
+        float randX = UnityEngine.Random.Range(0, 1024f);
+        float randZ = UnityEngine.Random.Range(0, 1024f);
         Vector3 randomPos = new Vector3(randX, 0, randZ);
 
         Entity enemy = entityManager.Instantiate(enemyEntity);
@@ -121,24 +118,29 @@ public class GameWorld : MonoBehaviour
         return enemy;
     }
 
-    public Entity CreateSkillVfxEntity()
+    public Entity CreateSkillVfxEntity(string goPrefabName, Transform startPos, Quaternion startQuaterion)
     {
-        Entity skillVfx = entityManager.Instantiate(skillVfxEntity);
-        //entityManager.SetComponentData(skillVfx, new Translation {  });
-        return skillVfx;
-    }
+        GameObject vfxPrefab = Resources.Load<GameObject>("Prefabs/" + goPrefabName);
+        if (vfxPrefab == null)
+        {
+            return Entity.Null;
+        }
 
-    public Entity CreateSkillVfxEntity(GameObject goPrefab, Transform startPos, Quaternion startQuaterion)
-    {
-        var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(goPrefab, settings);
+        var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(vfxPrefab, settings);
         var skillVfx = entityManager.Instantiate(entity);
+        entityManager.SetName(skillVfx, goPrefabName);
         entityManager.AddComponent(skillVfx, typeof(SkillVFXTag));
         entityManager.AddComponentData(skillVfx, new EntityCollision() { Radius = 1 });
-        entityManager.AddComponentData(skillVfx, new MoveSpeed() { Value = 10 });
+        entityManager.AddComponentData(entity, new DistanceRecord() { Distance = 0 });
         entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos.position });
         entityManager.SetComponentData(skillVfx, new Rotation() { Value = startQuaterion });
 
         return skillVfx;
+    }
+
+    public string GetEntityName(Entity entity)
+    {
+        return entity == null ? "EntityNull" : entityManager.GetName(entity);
     }
 
     public Vector3 GetCurrentWeaponPos()
