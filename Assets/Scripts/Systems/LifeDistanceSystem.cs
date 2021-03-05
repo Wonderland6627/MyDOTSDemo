@@ -31,7 +31,7 @@ public class LifeDistanceSystem : JobComponentSystem
             if (record.Distance >= 200f)
             {
                 Debug.Log(string.Format("移除,飞行距离 {0}: ", record.Distance));
-                concurrent.DestroyEntity(index, entity);
+                concurrent.DestroyEntity(index, entity); 
             }
         }
     }

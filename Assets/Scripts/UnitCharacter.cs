@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 public class UnitCharacter : MonoBehaviour
@@ -64,6 +65,8 @@ public class UnitCharacter : MonoBehaviour
     #endregion
 
     #region AttackPart
+    public int vfxCount = 0;
+
     public Transform attackVFXPos;//攻击特效释放位置
     public LayerMask aimLayerMask;
 
@@ -301,10 +304,10 @@ public class UnitCharacter : MonoBehaviour
     }
 
     private void ReleaseSkillVFX(string vfxGoName)
-    {      
-        GameWorld.GetInstance().CreateSkillVfxEntity(vfxGoName, attackVFXPos, transform.rotation);
+    {
+        GameWorld.GetInstance().CreateSkillVfxEntities(vfxCount, vfxGoName, attackVFXPos, transform.rotation);
 
-        Debug.Log(string.Format("释放技能:{0}", vfxGoName));
+        //GameWorld.GetInstance().CreateSkillVfxEntity(vfxGoName, attackVFXPos, transform.rotation);
     }
 
     #endregion

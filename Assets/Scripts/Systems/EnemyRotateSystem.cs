@@ -4,8 +4,8 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Burst;
+using UnityEngine;
 
-[DisableAutoCreation]
 public class EnemyRotateSystem : JobComponentSystem
 {
     [BurstCompile]
@@ -17,6 +17,7 @@ public class EnemyRotateSystem : JobComponentSystem
         public void Execute(ref Translation pos, ref Rotation rot, ref RotateSpeed rotateSpeed)
         {
             float3 heading = targetPos - pos.Value;
+            heading.y = 0;
             rot.Value = quaternion.LookRotation(heading, math.up() * deltaTime);
         }
     }

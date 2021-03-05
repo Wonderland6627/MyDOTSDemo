@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using Unity.Transforms;
+using Unity.Collections;
 
 public class GameWorld : MonoBehaviour
 {
@@ -128,11 +129,31 @@ public class GameWorld : MonoBehaviour
 
         var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(vfxPrefab, settings);
         var skillVfx = entityManager.Instantiate(entity);
-        entityManager.SetName(skillVfx, goPrefabName);       
+        entityManager.SetName(skillVfx, goPrefabName);
         entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos.position });
         entityManager.SetComponentData(skillVfx, new Rotation() { Value = startQuaterion });
 
         return skillVfx;
+    }
+
+    public void CreateSkillVfxEntities(int count, string goPrefabName, Transform startPos, Quaternion startQuarerion)
+    {
+        NativeArray<Entity> vfxArray = new NativeArray<Entity>(count, Allocator.TempJob);
+        entityManager.Instantiate(CreateSkillVfxEntity(goPrefabName, startPos, startQuarerion), vfxArray);
+
+        int max = count / 2;
+        int min = -max;
+        int index = 0;
+        Vector3 rotation = startQuarerion.eulerAngles;
+        for (int i = min; i < max; i++)
+        {
+            rotation.y = (rotation.y + 3f * i) % 360f;
+            entityManager.SetComponentData(vfxArray[index], new Rotation { Value = Quaternion.Euler(rotation) });
+
+            index++;
+        }
+
+        vfxArray.Dispose();
     }
 
     public string GetEntityName(Entity entity)
@@ -150,6 +171,12 @@ public class GameWorld : MonoBehaviour
         Translation translation = entityManager.GetComponentData<Translation>(CurrentWeapon);
         return translation.Value;
     }
+
+    /*private void OnGUI()
+    {
+        NativeArray<Entity> allEntities = entityManager.GetAllEntities();
+        GUILayout.Label("Entities Count: " + allEntities.Length);
+    }*/
 
     public void Clear()
     {

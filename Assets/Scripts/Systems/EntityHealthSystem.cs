@@ -39,7 +39,7 @@ public class EntityHealthSystem : JobComponentSystem
         {
             if (health.Value <= 0)
             {
-                CommandBuffer.DestroyEntity(index, entity);
+                CommandBuffer.DestroyEntity(index, entity);      
             }
         }
     }

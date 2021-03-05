@@ -11,21 +11,22 @@ using Unity.Burst;
 /// <summary>
 /// 通过增删ComponentData控制行为
 /// </summary>
-public class EnemyBehaviourSystem : JobComponentSystem
+public class EnemyBehaviourSystem : ComponentSystem
 {
     private Type moveType;
     private Type rotateType;
 
-    private static EntityManager entityManager;
+    protected override void OnUpdate()
+    {
+        //Entities.
+    }
 
-    protected override void OnCreate()
+    /*protected override void OnCreate()
     {
         base.OnCreate();
 
         moveType = typeof(MoveSpeed);
         rotateType = typeof(RotateSpeed);
-
-        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
     }
 
     struct BehaviourJob : IJobForEachWithEntity<EnemyState>
@@ -35,28 +36,18 @@ public class EnemyBehaviourSystem : JobComponentSystem
         public void Execute(Entity entity, int index, ref EnemyState state)
         {
             state.Duration += deltaTime;
-            if (state.Duration > 5)
+            if (state.Duration >= 5)
             {
-                if (!entityManager.HasComponent<MoveSpeed>(entity))
-                {
-                    entityManager.AddComponent<MoveSpeed>(entity);
-                }
-            }
-            else
-            {
-                if (entityManager.HasComponent<MoveSpeed>(entity))
-                {
-                    entityManager.RemoveComponent<MoveSpeed>(entity);
-                }
+                state.Duration = 0;
             }
         }
     }
 
     static void ChangeState(Entity entity, EnemyBehaviourState state)
     {
-        var stateStruct = entityManager.GetComponentData<EnemyState>(entity);
+        var stateStruct = World.DefaultGameObjectInjectionWorld.EntityManager.GetComponentData<EnemyState>(entity);
         stateStruct.BehaviourState = state;
-        entityManager.SetComponentData(entity, stateStruct);
+        World.DefaultGameObjectInjectionWorld.EntityManager.SetComponentData(entity, stateStruct);
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
@@ -67,5 +58,5 @@ public class EnemyBehaviourSystem : JobComponentSystem
         };
 
         return behaviourJob.Schedule(this, inputDeps);
-    }
+    }*/
 }
