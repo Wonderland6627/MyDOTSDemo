@@ -75,6 +75,8 @@ public class GameWorld : MonoBehaviour
     private EntityManager entityManager;
     private GameObjectConversionSettings settings;
 
+    private List<Entity> entitiesList = new List<Entity>();
+
     public void Init()
     {
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
@@ -88,7 +90,7 @@ public class GameWorld : MonoBehaviour
 
         Player.Init();
 
-        for (int i = 0; i < 34000; i++)
+        for (int i = 0; i < 30000; i++)
         {
             CreateEnemyEntity();
         }
@@ -115,6 +117,14 @@ public class GameWorld : MonoBehaviour
 
         Entity enemy = entityManager.Instantiate(enemyEntity);
         entityManager.SetComponentData(enemy, new Translation() { Value = randomPos });
+
+        EnemyState state = new EnemyState()
+        {
+            Duration = Random.Range(0.5f, 3f),
+            stateTime = Random.Range(0.5f, 3f),
+            BehaviourState = EnemyBehaviourState.Idle,
+        };
+        entityManager.AddComponentData(enemy, state);
 
         return enemy;
     }
@@ -172,11 +182,50 @@ public class GameWorld : MonoBehaviour
         return translation.Value;
     }
 
-    /*private void OnGUI()
+    private void OnGUI()
     {
         NativeArray<Entity> allEntities = entityManager.GetAllEntities();
         GUILayout.Label("Entities Count: " + allEntities.Length);
-    }*/
+
+        if (GUILayout.Button("Idle"))
+        {
+            for (int i = 0; i < allEntities.Length; i++)
+            {
+                if (entityManager.HasComponent<EnemyState>(allEntities[i]))
+                {
+                    var state = entityManager.GetComponentData<EnemyState>(allEntities[i]);
+                    state.BehaviourState = EnemyBehaviourState.Idle;
+                    entityManager.SetComponentData<EnemyState>(allEntities[i], state);
+                }
+            }
+        }
+
+        if (GUILayout.Button("Move"))
+        {
+            for (int i = 0; i < allEntities.Length; i++)
+            {
+                if (entityManager.HasComponent<EnemyState>(allEntities[i]))
+                {
+                    var state = entityManager.GetComponentData<EnemyState>(allEntities[i]);
+                    state.BehaviourState = EnemyBehaviourState.Move;
+                    entityManager.SetComponentData<EnemyState>(allEntities[i], state);
+                }
+            }
+        }
+
+        if (GUILayout.Button("Attack"))
+        {
+            for (int i = 0; i < allEntities.Length; i++)
+            {
+                if (entityManager.HasComponent<EnemyState>(allEntities[i]))
+                {
+                    var state = entityManager.GetComponentData<EnemyState>(allEntities[i]);
+                    state.BehaviourState = EnemyBehaviourState.Attack;
+                    entityManager.SetComponentData<EnemyState>(allEntities[i], state);
+                }
+            }
+        }
+    }
 
     public void Clear()
     {

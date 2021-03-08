@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
+using Unity.Transforms;
 
-public class SystemBaseTest : MonoBehaviour
+[DisableAutoCreation]
+public class SystemBaseTest : SystemBase
 {
-    // Start is called before the first frame update
-    void Start()
+    protected override void OnUpdate()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Entities
+            .ForEach((ref Translation pos) =>
+            {
+                Debug.Log(string.Format("{0}", pos.Value));
+            })
+            .WithAny<WeaponTag>()
+            .Schedule();
     }
 }

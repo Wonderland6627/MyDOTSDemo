@@ -11,14 +11,25 @@ using Unity.Burst;
 /// <summary>
 /// 通过增删ComponentData控制行为
 /// </summary>
-public class EnemyBehaviourSystem : ComponentSystem
+public class EnemyBehaviourSystem : SystemBase
 {
-    private Type moveType;
-    private Type rotateType;
-
     protected override void OnUpdate()
     {
-        //Entities.
+        //Entities
+        //    .WithAll<EnemyTag>()
+        //    .WithBurst()
+        //    .ForEach((ref EnemyState state) =>
+        //    {
+        //        if (state.ChangeTime >= 0)
+        //        {
+        //            state.ChangeTime -= .15f;
+        //            if (state.ChangeTime <= 0)
+        //            {
+        //                Debug.Log(state.ChangeTime);
+        //            }
+        //        }
+        //    })
+        //    .Schedule();
     }
 
     /*protected override void OnCreate()

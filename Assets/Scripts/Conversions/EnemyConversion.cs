@@ -33,7 +33,7 @@ public class EnemyConversion : MonoBehaviour, IConvertGameObjectToEntity
         RotateSpeed rotate = new RotateSpeed() { Value = rotateSpeed };
         dstManager.AddComponentData(entity, rotate);
 
-        EnemyState behaviourState = new EnemyState() { };
-        dstManager.AddComponentData(entity, behaviourState);
+        //EnemyState behaviourState = new EnemyState() { Duration = Random.Range(0.5f, 3f), ChangeTime = Random.Range(0.5f,3f), BehaviourState = EnemyBehaviourState.Idle };
+        //dstManager.AddComponentData(entity, behaviourState);
     }
 }

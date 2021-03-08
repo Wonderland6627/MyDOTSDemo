@@ -9,29 +9,42 @@ using UnityEngine;
 public class EnemyRotateSystem : JobComponentSystem
 {
     [BurstCompile]
-    struct RotateJob : IJobForEach<Translation, Rotation, RotateSpeed>
+    struct RotateJob : IJobForEach<Translation, Rotation, RotateSpeed, EnemyState>
     {
         public float deltaTime;
         public float3 targetPos;
+        public float3 playerPos;
 
-        public void Execute(ref Translation pos, ref Rotation rot, ref RotateSpeed rotateSpeed)
+        public void Execute(ref Translation pos, ref Rotation rot, ref RotateSpeed rotateSpeed, ref EnemyState state)
         {
-            float3 heading = targetPos - pos.Value;
-            heading.y = 0;
-            rot.Value = quaternion.LookRotation(heading, math.up() * deltaTime);
+            if (state.BehaviourState == EnemyBehaviourState.Attack)
+            {
+                targetPos = playerPos;
+            }
+
+            state.stateTime -= deltaTime;
+            if (state.stateTime <= 0)
+            {
+                state.stateTime = state.Duration;
+
+                float3 heading = targetPos - pos.Value;
+                heading.y = 0;
+                rot.Value = quaternion.LookRotation(heading, math.up() * deltaTime);
+            }
         }
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         //System.Random rand = new System.Random(DateTime.Now.Second);
-        float randX = UnityEngine.Random.Range(0, 2048f);
-        float randZ = UnityEngine.Random.Range(0, 2048f);
+        float randX = UnityEngine.Random.Range(-1024, 1024f);
+        float randZ = UnityEngine.Random.Range(-1024, 1024f);
         float3 randPos = new float3(randX, 0, randZ);
 
         RotateJob job = new RotateJob()
         {
-            targetPos = GameWorld.GetInstance().Player.transform.position,
+            targetPos = randPos,
+            playerPos = GameWorld.GetInstance().Player.transform.position,
             deltaTime = Time.DeltaTime,
         };
 
