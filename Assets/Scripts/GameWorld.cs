@@ -122,8 +122,8 @@ public class GameWorld : MonoBehaviour
 
         EnemyState state = new EnemyState()
         {
-            Duration = Random.Range(0.5f, 3f),
-            stateTime = Random.Range(0.5f, 3f),
+            Duration = Random.Range(1.8f, 2.2f),
+            stateTime = Random.Range(1.9f, 2.1f),
             BehaviourState = EnemyBehaviourState.Idle,
         };
         entityManager.AddComponentData(enemy, state);

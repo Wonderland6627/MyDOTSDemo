@@ -17,6 +17,11 @@ public class EnemyRotateSystem : JobComponentSystem
 
         public void Execute(ref Translation pos, ref Rotation rot, ref RotateSpeed rotateSpeed, ref EnemyState state)
         {
+            if (state.BehaviourState == EnemyBehaviourState.Idle)
+            {
+                return;
+            }
+
             if (state.BehaviourState == EnemyBehaviourState.Attack)
             {
                 targetPos = playerPos;
