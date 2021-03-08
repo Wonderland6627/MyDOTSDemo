@@ -310,6 +310,12 @@ public class UnitCharacter : MonoBehaviour
         //GameWorld.GetInstance().CreateSkillVfxEntity(vfxGoName, attackVFXPos, transform.rotation);
     }
 
+    private void SetWeaponState(string tof)
+    {
+        bool isAttacking = true ? tof == "T" : false;
+        GameWorld.GetInstance().SetCurrentWeaponAttackState(isAttacking);
+    }
+
     #endregion
 }
 

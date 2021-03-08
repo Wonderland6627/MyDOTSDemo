@@ -5,7 +5,11 @@ using Unity.Entities;
 
 public class SkillVfxConversion : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public float flySpeed;
+    [Header("飞行速度")]
+    public float flySpeed = 10;
+
+    [Header("技能威力")]
+    public float skillPower = 100;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {

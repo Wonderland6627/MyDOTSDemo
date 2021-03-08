@@ -105,6 +105,8 @@ public class GameWorld : MonoBehaviour
         Entity weapon = entityManager.Instantiate(weaponEntity);
         entityManager.SetName(weapon, "PlayerWeapon");
         entityManager.SetComponentData(weapon, new Translation { Value = Player.weaponPos.position });
+        WeaponState weaponState = new WeaponState() { isAttacking = false };
+        entityManager.AddComponentData(weapon, weaponState);
 
         return weapon;
     }
@@ -180,6 +182,18 @@ public class GameWorld : MonoBehaviour
 
         Translation translation = entityManager.GetComponentData<Translation>(CurrentWeapon);
         return translation.Value;
+    }
+
+    public void SetCurrentWeaponAttackState(bool isAttaking)
+    {
+        if (CurrentWeapon == null)
+        {
+            return;
+        }
+
+        WeaponState weaponState = entityManager.GetComponentData<WeaponState>(CurrentWeapon);
+        weaponState.isAttacking = isAttaking;
+        entityManager.SetComponentData<WeaponState>(CurrentWeapon, weaponState);
     }
 
     private void OnGUI()
