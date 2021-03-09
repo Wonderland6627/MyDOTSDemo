@@ -13,6 +13,8 @@ public class EnemyRotateSystem : JobComponentSystem
     {
         public float deltaTime;
         public float3 targetPos;
+
+        public float3 randPos;
         public float3 playerPos;
 
         public void Execute(ref Translation pos, ref Rotation rot, ref RotateSpeed rotateSpeed, ref EnemyState state)
@@ -25,6 +27,10 @@ public class EnemyRotateSystem : JobComponentSystem
             if (state.BehaviourState == EnemyBehaviourState.Attack)
             {
                 targetPos = playerPos;
+            }
+            else
+            {
+                targetPos = randPos;
             }
 
             state.stateTime -= deltaTime;
@@ -48,7 +54,7 @@ public class EnemyRotateSystem : JobComponentSystem
 
         RotateJob job = new RotateJob()
         {
-            targetPos = randPos,
+            randPos = randPos,
             playerPos = GameWorld.GetInstance().Player.transform.position,
             deltaTime = Time.DeltaTime,
         };

@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Entities;
 using Unity.Transforms;
 using Unity.Collections;
+using Unity.Mathematics;
 
 public class GameWorld : MonoBehaviour
 {
@@ -76,6 +77,7 @@ public class GameWorld : MonoBehaviour
     private GameObjectConversionSettings settings;
 
     private List<Entity> entitiesList = new List<Entity>();
+    private BlobAssetReference<AnimationBlobAsset> animationBlob;
 
     public void Init()
     {
@@ -90,7 +92,8 @@ public class GameWorld : MonoBehaviour
 
         Player.Init();
 
-        for (int i = 0; i < 30000; i++)
+        InitBlobAsset();
+        for (int i = 0; i < 10; i++)
         {
             CreateEnemyEntity();
         }
@@ -113,8 +116,8 @@ public class GameWorld : MonoBehaviour
 
     private Entity CreateEnemyEntity()
     {
-        float randX = UnityEngine.Random.Range(0, 1024f);
-        float randZ = UnityEngine.Random.Range(0, 1024f);
+        float randX = UnityEngine.Random.Range(0, 102.4f);
+        float randZ = UnityEngine.Random.Range(0, 102.4f);
         Vector3 randomPos = new Vector3(randX, 0, randZ);
 
         Entity enemy = entityManager.Instantiate(enemyEntity);
@@ -122,11 +125,19 @@ public class GameWorld : MonoBehaviour
 
         EnemyState state = new EnemyState()
         {
-            Duration = Random.Range(1.8f, 2.2f),
-            stateTime = Random.Range(1.9f, 2.1f),
+            Duration = UnityEngine.Random.Range(1.8f, 2.2f),
+            stateTime = UnityEngine.Random.Range(1.9f, 2.1f),
             BehaviourState = EnemyBehaviourState.Idle,
         };
         entityManager.AddComponentData(enemy, state);
+
+        EnemyAnimation animation = new EnemyAnimation()
+        {
+            animationBlobRef = animationBlob,
+            timer = 0,
+            frame = 0,
+        };
+        entityManager.AddComponentData(enemy, animation);
 
         return enemy;
     }
@@ -196,12 +207,36 @@ public class GameWorld : MonoBehaviour
         entityManager.SetComponentData<WeaponState>(CurrentWeapon, weaponState);
     }
 
+    /// <summary>
+    /// 初始化BlobAsset
+    /// </summary>
+    private void InitBlobAsset()
+    {
+        AnimationData data = Resources.Load<AnimationData>("AnimationDatas/Test2") as AnimationData;
+        using (BlobBuilder blobBuilder = new BlobBuilder(Allocator.Temp))
+        {
+            ref AnimationBlobAsset asset = ref blobBuilder.ConstructRoot<AnimationBlobAsset>();
+            BlobBuilderArray<float3> positions = blobBuilder.Allocate(ref asset.positions, data.frameCount);
+            asset.frameDelta = data.frameDelta;
+            asset.frameCount = data.frameCount;
+
+            for (int i = 0; i < data.frameCount; i++)
+            {
+                positions[i] = new float3(data.positions[i]);
+            }
+
+            animationBlob = blobBuilder.CreateBlobAssetReference<AnimationBlobAsset>(Allocator.Persistent);
+        }
+    }
+
     private void OnGUI()
     {
+        GUILayout.Space(20);
+
         NativeArray<Entity> allEntities = entityManager.GetAllEntities();
         GUILayout.Label("Entities Count: " + allEntities.Length);
 
-        if (GUILayout.Button("Idle"))
+        /*if (GUILayout.Button("Idle"))
         {
             for (int i = 0; i < allEntities.Length; i++)
             {
@@ -238,7 +273,7 @@ public class GameWorld : MonoBehaviour
                     entityManager.SetComponentData<EnemyState>(allEntities[i], state);
                 }
             }
-        }
+        }*/
     }
 
     public void Clear()

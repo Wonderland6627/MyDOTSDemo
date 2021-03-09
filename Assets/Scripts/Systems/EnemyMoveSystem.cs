@@ -7,7 +7,7 @@ using Unity.Jobs;
 using Unity.Burst;
 using Unity.Mathematics;
 
-
+[DisableAutoCreation]
 public class EnemyMoveSystem : JobComponentSystem
 {
     [BurstCompile]
