@@ -93,7 +93,7 @@ public class GameWorld : MonoBehaviour
         Player.Init();
 
         InitBlobAsset();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10000; i++)
         {
             CreateEnemyEntity();
         }
@@ -116,8 +116,8 @@ public class GameWorld : MonoBehaviour
 
     private Entity CreateEnemyEntity()
     {
-        float randX = UnityEngine.Random.Range(0, 102.4f);
-        float randZ = UnityEngine.Random.Range(0, 102.4f);
+        float randX = UnityEngine.Random.Range(0, 1024f);
+        float randZ = UnityEngine.Random.Range(0, 1024f);
         Vector3 randomPos = new Vector3(randX, 0, randZ);
 
         Entity enemy = entityManager.Instantiate(enemyEntity);

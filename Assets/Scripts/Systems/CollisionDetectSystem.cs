@@ -155,6 +155,50 @@ public class CollisionDetectSystem : JobComponentSystem
         }
     }
 
+    [BurstCompile]
+    struct OtherCollsionJob : IJobChunk
+    {
+        public float radius;
+        public ArchetypeChunkComponentType<Translation> translationType;
+        public ArchetypeChunkComponentType<EnemyState> enemiesStateType;
+
+        [DeallocateOnJobCompletion]
+        public NativeArray<Translation> otherTranslationsArray;
+        [DeallocateOnJobCompletion]
+        public NativeArray<EnemyState> enemiesStatesArray;
+
+        public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
+        {
+            var chunkTranslations = chunk.GetNativeArray(translationType);
+            var chunkEnemiesStates = chunk.GetNativeArray(enemiesStateType);
+
+            for (int i = 0; i < chunk.Count; i++)
+            {
+                Translation pos1 = chunkTranslations[i];
+                EnemyState state1 = chunkEnemiesStates[i];
+
+                for (int j = 0; j < otherTranslationsArray.Length; j++)
+                {
+                    Translation pos2 = otherTranslationsArray[j];
+                    if(pos1.Value.Equals(pos2.Value))
+                    {
+                        continue;
+                    }
+
+                    EnemyState state2 = enemiesStatesArray[j];
+                    if (CheckCollision(pos1.Value, pos2.Value, radius))
+                    {
+                        state1.BehaviourState = EnemyBehaviourState.Idle;
+                        chunkEnemiesStates[i] = state1;
+
+                        state2.BehaviourState = EnemyBehaviourState.Idle;
+                        enemiesStatesArray[j] = state2;
+                    }
+                }
+            }
+        }
+    }
+
     static bool CheckCollision(float3 posA, float3 posB, float radius)
     {
         float3 delta = posA - posB;
@@ -198,7 +242,18 @@ public class CollisionDetectSystem : JobComponentSystem
             otherTranslationsArray = weaponGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
         };
 
-        return playerCollisionEnemyJob.Schedule(enemyGroup, inputDeps);
+        playerCollisionEnemyJob.Schedule(enemyGroup, inputDeps).Complete();
+
+        OtherCollsionJob enemyCollisionEnemyJob = new OtherCollsionJob()//敌人之间距离检测
+        {
+            radius = 3,
+            translationType = translationType,
+            enemiesStateType = enemiesStateType,
+            otherTranslationsArray = enemyGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
+            enemiesStatesArray = enemyGroup.ToComponentDataArray<EnemyState>(Allocator.TempJob),
+        };
+
+        return enemyCollisionEnemyJob.Schedule(enemyGroup, inputDeps);
 
         /*StateCollsionJob stateCollsionJob = new StateCollsionJob
         {

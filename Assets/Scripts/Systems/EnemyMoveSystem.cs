@@ -7,7 +7,6 @@ using Unity.Jobs;
 using Unity.Burst;
 using Unity.Mathematics;
 
-[DisableAutoCreation]
 public class EnemyMoveSystem : JobComponentSystem
 {
     [BurstCompile]
@@ -24,7 +23,7 @@ public class EnemyMoveSystem : JobComponentSystem
 
             pos.Value += moveSpeed.Value * math.forward(rot.Value) * deltaTime;
             float3 clampPos = pos.Value;
-            clampPos = math.clamp(clampPos, new float3(0, 0, 0), new float3(1024, 0, 1024f));
+            clampPos = math.clamp(clampPos, new float3(0, 0, 0), new float3(1024f, 0f, 1024f));
 
             pos.Value = clampPos;
         }
