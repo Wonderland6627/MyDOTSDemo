@@ -15,17 +15,29 @@ public class EnemyMoveSystem : JobComponentSystem
         public float deltaTime;
 
         public void Execute(ref Translation pos, ref Rotation rot, ref MoveSpeed moveSpeed, ref EnemyState state)
-        {           
+        {
             if (state.BehaviourState == EnemyBehaviourState.Idle || state.BehaviourState == EnemyBehaviourState.Attack)
             {
                 return;
             }
 
-            pos.Value += moveSpeed.Value * math.forward(rot.Value) * deltaTime;
-            float3 clampPos = pos.Value;
-            clampPos = math.clamp(clampPos, new float3(0, 0, 0), new float3(1024f, 0f, 1024f));
+            state.moveWaitTime += deltaTime;
+            if (state.moveWaitTime > 0 && state.moveWaitTime < EnemyStateTime.IdleTimeValue)
+            {
+                return;
+            }
+            else if (state.moveWaitTime >= EnemyStateTime.IdleTimeValue && state.moveWaitTime < state.moveStartTime)
+            {
+                pos.Value += moveSpeed.Value * math.forward(rot.Value) * deltaTime;
+                float3 clampPos = pos.Value;
+                clampPos = math.clamp(clampPos, new float3(0, 0, 0), new float3(1024f, 0f, 1024f));
 
-            pos.Value = clampPos;
+                pos.Value = clampPos;
+            }
+            else
+            {
+                state.moveWaitTime = 0;
+            }
         }
     }
 

@@ -23,6 +23,8 @@ public struct EnemyState : IComponentData
     public float Duration;//持续时间
 
     public float moveWaitTime;//移动等待时间
+    public float moveStartTime;//必须大于moveWaitTime
+
     public float stateTime;//切换状态时间 初始化时随机赋值
 
     public EnemyBehaviourState BehaviourState;

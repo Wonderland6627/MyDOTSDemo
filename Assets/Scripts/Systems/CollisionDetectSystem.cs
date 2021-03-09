@@ -160,6 +160,7 @@ public class CollisionDetectSystem : JobComponentSystem
     {
         public float radius;
         public ArchetypeChunkComponentType<Translation> translationType;
+        public ArchetypeChunkComponentType<Rotation> rotataionType;
         public ArchetypeChunkComponentType<EnemyState> enemiesStateType;
 
         [DeallocateOnJobCompletion]
@@ -170,12 +171,15 @@ public class CollisionDetectSystem : JobComponentSystem
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
             var chunkTranslations = chunk.GetNativeArray(translationType);
+            var chunkRotations = chunk.GetNativeArray(rotataionType);
             var chunkEnemiesStates = chunk.GetNativeArray(enemiesStateType);
 
             for (int i = 0; i < chunk.Count; i++)
             {
                 Translation pos1 = chunkTranslations[i];
+                Rotation rot1 = chunkRotations[i];
                 EnemyState state1 = chunkEnemiesStates[i];
+                float3 forwardPos = pos1.Value + math.forward(rot1.Value) * radius / 2f;
 
                 for (int j = 0; j < otherTranslationsArray.Length; j++)
                 {
@@ -186,13 +190,10 @@ public class CollisionDetectSystem : JobComponentSystem
                     }
 
                     EnemyState state2 = enemiesStatesArray[j];
-                    if (CheckCollision(pos1.Value, pos2.Value, radius))
+                    if (CheckCollision(forwardPos, pos2.Value, radius))
                     {
                         state1.BehaviourState = EnemyBehaviourState.Idle;
                         chunkEnemiesStates[i] = state1;
-
-                        state2.BehaviourState = EnemyBehaviourState.Idle;
-                        enemiesStatesArray[j] = state2;
                     }
                 }
             }
@@ -246,8 +247,9 @@ public class CollisionDetectSystem : JobComponentSystem
 
         OtherCollsionJob enemyCollisionEnemyJob = new OtherCollsionJob()//敌人之间距离检测
         {
-            radius = 3,
+            radius = 2.75f,
             translationType = translationType,
+            rotataionType = rotationType,
             enemiesStateType = enemiesStateType,
             otherTranslationsArray = enemyGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
             enemiesStatesArray = enemyGroup.ToComponentDataArray<EnemyState>(Allocator.TempJob),

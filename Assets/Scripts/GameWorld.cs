@@ -93,7 +93,7 @@ public class GameWorld : MonoBehaviour
         Player.Init();
 
         InitBlobAsset();
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < 3000; i++)
         {
             CreateEnemyEntity();
         }
@@ -114,7 +114,7 @@ public class GameWorld : MonoBehaviour
         return weapon;
     }
 
-    private Entity CreateEnemyEntity()
+    public Entity CreateEnemyEntity()
     {
         float randX = UnityEngine.Random.Range(0, 1024f);
         float randZ = UnityEngine.Random.Range(0, 1024f);
@@ -122,11 +122,14 @@ public class GameWorld : MonoBehaviour
 
         Entity enemy = entityManager.Instantiate(enemyEntity);
         entityManager.SetComponentData(enemy, new Translation() { Value = randomPos });
+        entityManager.SetComponentData(enemy, new Rotation() { Value = quaternion.LookRotation(-randomPos,math.up()) }); ;
 
         EnemyState state = new EnemyState()
         {
             Duration = UnityEngine.Random.Range(1.8f, 2.2f),
             stateTime = UnityEngine.Random.Range(1.9f, 2.1f),
+            moveWaitTime = 0,
+            moveStartTime = UnityEngine.Random.Range(2f, 10f),
             BehaviourState = EnemyBehaviourState.Idle,
         };
         entityManager.AddComponentData(enemy, state);

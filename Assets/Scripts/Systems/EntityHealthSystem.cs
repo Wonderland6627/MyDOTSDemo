@@ -30,7 +30,7 @@ public class EntityHealthSystem : JobComponentSystem
         bufferSystem = World.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
     }
 
-    [BurstCompile(CompileSynchronously = true)]
+    //[BurstCompile(CompileSynchronously = true)]
     struct DestoryEntityJob : IJobForEachWithEntity<EntityHealth>
     {
         public EntityCommandBuffer.Concurrent CommandBuffer;
@@ -39,7 +39,7 @@ public class EntityHealthSystem : JobComponentSystem
         {
             if (health.Value <= 0)
             {
-                CommandBuffer.DestroyEntity(index, entity);      
+                CommandBuffer.DestroyEntity(index, entity);
             }
         }
     }

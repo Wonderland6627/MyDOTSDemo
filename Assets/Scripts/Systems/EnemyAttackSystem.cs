@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Burst;
 
+[DisableAutoCreation]
 public class EnemyAttackSystem : JobComponentSystem
 {
     [BurstCompile]
@@ -16,8 +17,6 @@ public class EnemyAttackSystem : JobComponentSystem
 
         public void Execute(ref EnemyAnimation animation, ref NonUniformScale scale)
         {
-            return;
-
             ref AnimationBlobAsset blob = ref animation.animationBlobRef.Value;
 
             animation.timer += deltaTime;
