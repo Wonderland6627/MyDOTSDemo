@@ -6,6 +6,7 @@ using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Burst;
 using Unity.Mathematics;
+using Unity.Collections;
 
 public class VFXFlyForwardSystem : JobComponentSystem
 {
@@ -60,6 +61,7 @@ public class VFXFlyForwardSystem : JobComponentSystem
     [BurstCompile]
     struct MoveJob : IJobForEach<Translation, Rotation, MoveSpeed, SkillVFXTag>
     {
+        [ReadOnly]
         public float deltaTime;
 
         public void Execute(ref Translation pos, ref Rotation rot, ref MoveSpeed moveSpeed, ref SkillVFXTag tag)

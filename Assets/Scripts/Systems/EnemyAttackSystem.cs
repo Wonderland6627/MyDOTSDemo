@@ -6,9 +6,20 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Burst;
+using Unity.Collections;
 
+[DisableAutoCreation]
 public class EnemyAttackSystem : JobComponentSystem
 {
+    private BeginInitializationEntityCommandBufferSystem bufferSystem;
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
+        bufferSystem = World.GetOrCreateSystem<BeginInitializationEntityCommandBufferSystem>();
+    }
+
     [BurstCompile]
     struct AnimationJob : IJobForEach<EnemyAnimation, NonUniformScale>
     {
@@ -66,12 +77,30 @@ public class EnemyAttackSystem : JobComponentSystem
 
         return job.Schedule(this, inputDeps);*/
 
-        AttackJob attackJob = new AttackJob()
+        /*AttackJob attackJob = new AttackJob()
         {
             deltaTime = Time.DeltaTime,
             bulletEntity = GameWorld.GetInstance().EnemyBullet,
-        };
+        };*/
 
-        return attackJob.Schedule(this, inputDeps);
+        /*var commandBuffer = bufferSystem.CreateCommandBuffer().ToConcurrent();
+
+        var job = Entities.ForEach((Entity entity, int entityInQueryIndex, ref EnemyState state) =>
+            {
+                if (state.BehaviourState != EnemyBehaviourState.Attack)
+                {
+
+                }
+
+                state.aimTime += 0.016f;
+                if (state.aimTime >= EnemyStateTime.AttackDurationValue)
+                {
+                    state.aimTime = 0;
+                    //todo Attack
+                }
+                commandBuffer.Instantiate(entityInQueryIndex, entity);
+            }).Schedule(inputDeps);*/
+
+        return default;
     }
 }

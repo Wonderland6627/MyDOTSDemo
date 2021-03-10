@@ -24,6 +24,7 @@ public struct EnemyState : IComponentData
     public float Duration;//持续时间
 
     public float moveWaitTime;//移动等待时间
+
     public float moveStartTime;//必须大于moveWaitTime
 
     public float aimTime;//瞄准时间 大于一定就攻击

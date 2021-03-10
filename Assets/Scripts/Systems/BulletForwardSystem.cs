@@ -12,6 +12,7 @@ public class BulletForwardSystem : JobComponentSystem
     [BurstCompile]
     struct MoveJob : IJobForEach<Translation, Rotation, MoveSpeed, EnemyBulletTag>
     {
+        [Unity.Collections.ReadOnly]
         public float deltaTime;
 
         public void Execute(ref Translation pos, ref Rotation rot, ref MoveSpeed moveSpeed, ref EnemyBulletTag tag)

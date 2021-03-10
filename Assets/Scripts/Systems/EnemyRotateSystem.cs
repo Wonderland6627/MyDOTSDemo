@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -11,11 +12,12 @@ public class EnemyRotateSystem : JobComponentSystem
     [BurstCompile]
     struct RotateJob : IJobForEach<Translation, Rotation, RotateSpeed, EnemyState>
     {
+        [ReadOnly]
         public float deltaTime;
         public float3 targetPos;
 
-        public float3 randPos;
-        public float3 playerPos;
+        [ReadOnly] public float3 randPos;
+        [ReadOnly] public float3 playerPos;
 
         public void Execute(ref Translation pos, ref Rotation rot, ref RotateSpeed rotateSpeed, ref EnemyState state)
         {

@@ -21,14 +21,14 @@ public class EnemyOtherDetectSystem : JobComponentSystem
     [BurstCompile]
     struct StateCollsionJob : IJobChunk
     {
-        public float radius;
+        [ReadOnly] public float radius;
 
-        public ArchetypeChunkComponentType<Translation> translationType;
-        public ArchetypeChunkComponentType<Rotation> rotataionType;
+        [ReadOnly] public ArchetypeChunkComponentType<Translation> translationType;
+        [ReadOnly] public ArchetypeChunkComponentType<Rotation> rotataionType;
         public ArchetypeChunkComponentType<EnemyState> enemiesStateType;
 
         [DeallocateOnJobCompletion]
-        public NativeArray<Translation> otherTranslationsArray;
+        [ReadOnly] public NativeArray<Translation> otherTranslationsArray;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
@@ -96,15 +96,15 @@ public class EnemyOtherDetectSystem : JobComponentSystem
                         continue;
                     }
 
-                    //EnemyState state2 = enemiesStatesArray[j];
-                    if (MathExtension.CollisionStay(forwardPos, pos2.Value, radius))//面前有同类 站着不动 等待转向
-                    {
-                        state1.BehaviourState = EnemyBehaviourState.Idle;
-                        chunkEnemiesStates[i] = state1;
-                    }
-                    else if (MathExtension.CollisionStay(pos1.Value, pos2.Value, radius))//如果生成的时候挨得很近 先主动走开
+                    //EnemyState state2 = enemiesStatesArray[j];             
+                    if (MathExtension.CollisionStay(pos1.Value, pos2.Value, radius))//如果生成的时候挨得很近 先主动走开
                     {
                         state1.BehaviourState = EnemyBehaviourState.Move;
+                        chunkEnemiesStates[i] = state1;
+                    }
+                    else if (MathExtension.CollisionStay(forwardPos, pos2.Value, radius))//面前有同类 站着不动 等待转向
+                    {
+                        state1.BehaviourState = EnemyBehaviourState.Idle;
                         chunkEnemiesStates[i] = state1;
                     }
                 }

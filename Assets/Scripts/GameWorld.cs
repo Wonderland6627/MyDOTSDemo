@@ -104,6 +104,7 @@ public class GameWorld : MonoBehaviour
             CreateEnemyEntity();
         }
         CurrentWeapon = CreateWeaponEntity();
+        CreateDefenceEntity();
     }
 
     /// <summary>
@@ -132,6 +133,19 @@ public class GameWorld : MonoBehaviour
         entityManager.AddComponentData(weapon, weaponState);
 
         return weapon;
+    }
+
+    /// <summary>
+    /// 创建一个防御检测用的实体 代表Player
+    /// </summary>
+    private Entity CreateDefenceEntity()
+    {
+        Entity defence = entityManager.CreateEntity();
+        entityManager.SetName(defence, "PlayerDefence");
+        entityManager.AddComponent(defence, typeof(DefenceTag));
+        entityManager.AddComponent(defence, typeof(Translation));
+
+        return defence;
     }
 
     public Entity CreateEnemyEntity()

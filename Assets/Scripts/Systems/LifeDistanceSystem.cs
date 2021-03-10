@@ -22,7 +22,7 @@ public class LifeDistanceSystem : JobComponentSystem
     struct DistanceJob : IJobForEachWithEntity<MoveSpeed, DistanceRecord>
     {
         public EntityCommandBuffer.Concurrent concurrent;
-        public float deltaTime;
+        [Unity.Collections.ReadOnly] public float deltaTime;
 
         public void Execute(Entity entity, int index, ref MoveSpeed moveSpeed, ref DistanceRecord record)
         {

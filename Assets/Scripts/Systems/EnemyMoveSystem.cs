@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using Unity.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
@@ -12,6 +12,7 @@ public class EnemyMoveSystem : JobComponentSystem
     [BurstCompile]
     struct MoveJob : IJobForEach<Translation, Rotation, MoveSpeed, EnemyState>
     {
+        [ReadOnly]
         public float deltaTime;
 
         public void Execute(ref Translation pos, ref Rotation rot, ref MoveSpeed moveSpeed, ref EnemyState state)

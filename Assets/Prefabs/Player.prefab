@@ -791,7 +791,6 @@ GameObject:
   - component: {fileID: 1284264806738724267}
   - component: {fileID: 1284264807959664593}
   - component: {fileID: 1339568487}
-  - component: {fileID: 1339568488}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -814,6 +813,7 @@ Transform:
   - {fileID: 1284264806738893294}
   - {fileID: 7908944494625236731}
   - {fileID: 4503849147040646896}
+  - {fileID: 889323825004419949}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -900,6 +900,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponPos: {fileID: 1941949300994694736}
+  defencePos: {fileID: 889323825004419949}
   animator: {fileID: 0}
   unitRigidbody: {fileID: 0}
   unitCapsuleCollider: {fileID: 0}
@@ -922,12 +923,7 @@ MonoBehaviour:
   groundMaxDistance: 0.5
   groundDistance: 0
   stayAirTime: 0
-  skillVFXList:
-  - vfxKey: Attack_0
-    effectGo: {fileID: 7947093213148772126, guid: 3f41a69038eb33e48b84a18413b98905,
-      type: 3}
-    useLocalPosition: 0
-    cd: 0
+  vfxCount: 1
   attackVFXPos: {fileID: 4503849147040646896}
   aimLayerMask:
     serializedVersion: 2
@@ -950,19 +946,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerHealth: 100
   collisionRadius: 1
---- !u!114 &1339568488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1284264806738724276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea7d7495833204790ba1d3a8755397f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ConversionMode: 1
 --- !u!1 &1284264806738724278
 GameObject:
   m_ObjectHideFlags: 0
@@ -2487,6 +2470,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1284264806738893204}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5767196123584177901
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 889323825004419949}
+  m_Layer: 0
+  m_Name: DefencePos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &889323825004419949
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5767196123584177901}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1284264806738893204}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8995575563544351283
 GameObject:

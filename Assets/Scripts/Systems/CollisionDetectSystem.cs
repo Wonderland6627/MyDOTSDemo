@@ -28,14 +28,14 @@ public class CollisionDetectSystem : JobComponentSystem
     [BurstCompile]
     struct WeaponCollsionJob : IJobChunk
     {
-        public float radius;
-        public ArchetypeChunkComponentType<Translation> translationType;
+        [ReadOnly] public float radius;
+        [ReadOnly] public ArchetypeChunkComponentType<Translation> translationType;
         public ArchetypeChunkComponentType<EntityHealth> entitiesHealthType;
 
         [DeallocateOnJobCompletion]
-        public NativeArray<Translation> otherTranslationsArray;//武器的Array
+        [ReadOnly] public NativeArray<Translation> otherTranslationsArray;//武器的Array
         [DeallocateOnJobCompletion]
-        public NativeArray<WeaponState> weaponStatesArray;
+        [ReadOnly] public NativeArray<WeaponState> weaponStatesArray;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {

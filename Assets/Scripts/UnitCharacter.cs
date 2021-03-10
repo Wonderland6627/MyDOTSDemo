@@ -14,6 +14,9 @@ public class UnitCharacter : MonoBehaviour
     [Header("武器位置")]
     public Transform weaponPos;
 
+    [Header("防御位置")]
+    public Transform defencePos;
+
     public Animator animator;
     public Rigidbody unitRigidbody;
     public CapsuleCollider unitCapsuleCollider;

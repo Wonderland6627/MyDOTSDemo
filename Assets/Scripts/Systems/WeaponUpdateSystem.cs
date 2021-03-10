@@ -6,6 +6,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Burst;
+using Unity.Collections;
 
 /// <summary>
 /// 用于同步手中剑的Position和Rotation
@@ -38,7 +39,10 @@ public class WeaponUpdateSystem : JobComponentSystem
     [BurstCompile]
     struct WeaponUpdateJob : IJobForEach<Translation, Rotation>
     {
+        [ReadOnly]
         public float3 Postion;
+
+        [ReadOnly]
         public quaternion Rotation;
 
         public void Execute(ref Translation translation, ref Rotation rotation)
