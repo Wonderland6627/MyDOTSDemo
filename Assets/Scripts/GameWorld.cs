@@ -73,16 +73,22 @@ public class GameWorld : MonoBehaviour
     private Entity enemyEntity;
     private Entity weaponEntity;
 
+    private World thisWorld;
     private EntityManager entityManager;
     private GameObjectConversionSettings settings;
 
     private List<Entity> entitiesList = new List<Entity>();
     private BlobAssetReference<AnimationBlobAsset> animationBlob;
 
-    public void Init()
+    private GameInfo gameInfo;
+
+    public void Init(GameInfo info)
     {
-        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        settings = GameObjectConversionSettings.FromWorld(World.DefaultGameObjectInjectionWorld, null);
+        thisWorld = World.DefaultGameObjectInjectionWorld;
+        entityManager = thisWorld.EntityManager;
+        settings = GameObjectConversionSettings.FromWorld(thisWorld, null);
+
+        gameInfo = info;
 
         enemyPrefab = Resources.Load<GameObject>("Prefabs/Enemy 1");
         weaponPrefab = Resources.Load<GameObject>("Prefabs/Sword");
@@ -93,11 +99,25 @@ public class GameWorld : MonoBehaviour
         Player.Init();
 
         InitBlobAsset();
-        for (int i = 0; i < 3000; i++)
+        for (int i = 0; i < info.enemiesCount; i++)
         {
             CreateEnemyEntity();
         }
         CurrentWeapon = CreateWeaponEntity();
+    }
+
+    /// <summary>
+    /// 启用需要的系统
+    /// </summary>
+    public void CreateWorldSystems()
+    {
+        thisWorld.GetOrCreateSystem<WeaponUpdateSystem>();//武器位置同步系统
+        thisWorld.GetOrCreateSystem<EnemyMoveSystem>();
+        thisWorld.GetOrCreateSystem<EnemyRotateSystem>();
+        thisWorld.GetOrCreateSystem<CollisionDetectSystem>();
+        thisWorld.GetOrCreateSystem<EntityHealthSystem>();
+        thisWorld.GetOrCreateSystem<VFXFlyForwardSystem>();
+        thisWorld.GetOrCreateSystem<LifeDistanceSystem>();
     }
 
     /// <summary>
@@ -116,13 +136,13 @@ public class GameWorld : MonoBehaviour
 
     public Entity CreateEnemyEntity()
     {
-        float randX = UnityEngine.Random.Range(0, 1024f);
-        float randZ = UnityEngine.Random.Range(0, 1024f);
+        float randX = UnityEngine.Random.Range(0, gameInfo.rangeLength);
+        float randZ = UnityEngine.Random.Range(0, gameInfo.rangeLength);
         Vector3 randomPos = new Vector3(randX, 0, randZ);
 
         Entity enemy = entityManager.Instantiate(enemyEntity);
         entityManager.SetComponentData(enemy, new Translation() { Value = randomPos });
-        entityManager.SetComponentData(enemy, new Rotation() { Value = quaternion.LookRotation(-randomPos,math.up()) }); ;
+        entityManager.SetComponentData(enemy, new Rotation() { Value = quaternion.LookRotation(-randomPos, math.up()) }); ;
 
         EnemyState state = new EnemyState()
         {

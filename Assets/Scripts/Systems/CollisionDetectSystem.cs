@@ -59,7 +59,7 @@ public class CollisionDetectSystem : JobComponentSystem
 
                     if (weaponState.isAttacking)
                     {
-                        if (CheckCollision(pos1.Value, pos2.Value, radius))
+                        if (CollisionStay(pos1.Value, pos2.Value, radius))
                         {
                             health.Value -= 100;
                             chunkHealths[i] = health;//struct是值类型 所以必须再赋值回去
@@ -100,7 +100,7 @@ public class CollisionDetectSystem : JobComponentSystem
                     }
 
                     Translation pos2 = otherTranslationsArray[j];
-                    if (CheckCollision(pos1.Value, pos2.Value, radius))
+                    if (CollisionStay(pos1.Value, pos2.Value, radius))
                     {
                         health.Value -= 100;
                         chunkHealths[i] = health;
@@ -140,7 +140,7 @@ public class CollisionDetectSystem : JobComponentSystem
                 for (int j = 0; j < otherTranslationsArray.Length; j++)
                 {
                     Translation pos2 = otherTranslationsArray[j];
-                    if (CheckCollision(forwardPos, pos2.Value, radius))
+                    if (CollisionStay(forwardPos, pos2.Value, radius))
                     {
                         state.BehaviourState = EnemyBehaviourState.Attack;
                         chunkEnemiesStates[i] = state;
@@ -184,15 +184,20 @@ public class CollisionDetectSystem : JobComponentSystem
                 for (int j = 0; j < otherTranslationsArray.Length; j++)
                 {
                     Translation pos2 = otherTranslationsArray[j];
-                    if(pos1.Value.Equals(pos2.Value))
+                    if (pos1.Value.Equals(pos2.Value))
                     {
                         continue;
                     }
 
-                    EnemyState state2 = enemiesStatesArray[j];
-                    if (CheckCollision(forwardPos, pos2.Value, radius))
+                    //EnemyState state2 = enemiesStatesArray[j];
+                    if (CollisionStay(forwardPos, pos2.Value, radius))//面前有同类 站着不动 等待转向
                     {
                         state1.BehaviourState = EnemyBehaviourState.Idle;
+                        chunkEnemiesStates[i] = state1;
+                    }
+                    else if (CollisionStay(pos1.Value, pos2.Value, radius))//如果生成的时候挨得很近 先主动走开
+                    {
+                        state1.BehaviourState = EnemyBehaviourState.Move;
                         chunkEnemiesStates[i] = state1;
                     }
                 }
@@ -200,12 +205,22 @@ public class CollisionDetectSystem : JobComponentSystem
         }
     }
 
-    static bool CheckCollision(float3 posA, float3 posB, float radius)
+    private static bool CollisionStay(float3 posA, float3 posB, float radius)
+    {
+        return EntitiesDistance(posA, posB) <= Distance(radius);
+    }
+
+    private static float EntitiesDistance(float3 posA, float3 posB)
     {
         float3 delta = posA - posB;
         float distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
 
-        return distance <= radius * radius;
+        return distance;
+    }
+
+    private static float Distance(float radius)
+    {
+        return math.pow(radius, 2);
     }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
