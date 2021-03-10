@@ -165,7 +165,7 @@ public class GameWorld : MonoBehaviour
         return enemy;
     }
 
-    public Entity CreateSkillVfxEntity(string goPrefabName, Transform startPos, Quaternion startQuaterion)
+    public Entity CreateSkillVfxEntity(string goPrefabName, Vector3 startPos, Quaternion startQuaterion)
     {
         GameObject vfxPrefab = Resources.Load<GameObject>("Prefabs/" + goPrefabName);
         if (vfxPrefab == null)
@@ -176,13 +176,13 @@ public class GameWorld : MonoBehaviour
         var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(vfxPrefab, settings);
         var skillVfx = entityManager.Instantiate(entity);
         entityManager.SetName(skillVfx, goPrefabName);
-        entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos.position });
+        entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos });
         entityManager.SetComponentData(skillVfx, new Rotation() { Value = startQuaterion });
 
         return skillVfx;
     }
 
-    public void CreateSkillVfxEntities(int count, string goPrefabName, Transform startPos, Quaternion startQuarerion)
+    public void CreateSkillVfxEntities(int count, string goPrefabName, Vector3 startPos, Quaternion startQuarerion)
     {
         NativeArray<Entity> vfxArray = new NativeArray<Entity>(count, Allocator.TempJob);
         entityManager.Instantiate(CreateSkillVfxEntity(goPrefabName, startPos, startQuarerion), vfxArray);
@@ -200,6 +200,33 @@ public class GameWorld : MonoBehaviour
         }
 
         vfxArray.Dispose();
+    }
+
+    private Entity enemyBullet;
+    public Entity EnemyBullet
+    {
+        get
+        {
+            if (enemyBullet == null)
+            {
+                enemyBullet = GetEnemyBulletEntity();
+            }
+
+            return enemyBullet;
+        }
+    }
+    public Entity GetEnemyBulletEntity()
+    {
+        GameObject bulletRes = Resources.Load<GameObject>("Prefabs/EnemyBullet");
+        if (bulletRes == null)
+        {
+            return Entity.Null;
+        }
+
+        var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(bulletRes, settings);
+        //var bullet = entityManager.Instantiate(entity);
+
+        return entity;
     }
 
     public string GetEntityName(Entity entity)

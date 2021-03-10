@@ -7,7 +7,6 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Burst;
 
-[DisableAutoCreation]
 public class EnemyAttackSystem : JobComponentSystem
 {
     [BurstCompile]
@@ -36,13 +35,43 @@ public class EnemyAttackSystem : JobComponentSystem
         }
     }
 
+    [BurstCompile]
+    struct AttackJob : IJobForEachWithEntity<EnemyState, Translation, Rotation>
+    {
+        public float deltaTime;
+        public Entity bulletEntity;
+
+        public void Execute(Entity entity, int index, ref EnemyState state, ref Translation pos, ref Rotation rot)
+        {
+            if (state.BehaviourState != EnemyBehaviourState.Attack)
+            {
+                return;
+            }
+
+            state.aimTime += deltaTime;
+            if (state.aimTime >= EnemyStateTime.AttackDurationValue)
+            {
+                state.aimTime = 0;
+                //todo Attack
+            }
+        }
+    }
+
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        AnimationJob job = new AnimationJob()
+        /*AnimationJob job = new AnimationJob()
         {
             deltaTime = UnityEngine.Time.deltaTime,
         };
 
-        return job.Schedule(this, inputDeps);
+        return job.Schedule(this, inputDeps);*/
+
+        AttackJob attackJob = new AttackJob()
+        {
+            deltaTime = Time.DeltaTime,
+            bulletEntity = GameWorld.GetInstance().EnemyBullet,
+        };
+
+        return attackJob.Schedule(this, inputDeps);
     }
 }

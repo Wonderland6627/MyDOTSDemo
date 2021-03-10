@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6186572891620150771
+--- !u!1 &8438632944048608051
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6186572891620053459}
-  - component: {fileID: 6186572891621380595}
-  - component: {fileID: 6186572891622347571}
-  - component: {fileID: -5687520698747807311}
+  - component: {fileID: 378823159843209913}
+  - component: {fileID: 3923645441908174795}
+  - component: {fileID: 4468534323439124921}
+  - component: {fileID: 2113999797533450699}
   m_Layer: 0
-  m_Name: Sword
-  m_TagString: Weapon
+  m_Name: EnemyBullet
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6186572891620053459
+--- !u!4 &378823159843209913
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6186572891620150771}
+  m_GameObject: {fileID: 8438632944048608051}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1.74, y: 0.84, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6186572891621380595
+--- !u!33 &3923645441908174795
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6186572891620150771}
-  m_Mesh: {fileID: 4300000, guid: 851ef1e3b3356ce4fbafc5bf8e819636, type: 3}
---- !u!23 &6186572891622347571
+  m_GameObject: {fileID: 8438632944048608051}
+  m_Mesh: {fileID: 4300002, guid: 103612e5e1ff43a4e896c567a2cb3ae1, type: 3}
+--- !u!23 &4468534323439124921
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6186572891620150771}
+  m_GameObject: {fileID: 8438632944048608051}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ae4e8072c31111449b111d52ef06f582, type: 2}
+  - {fileID: 2100000, guid: 12fdb1b533f9c784eb79c7cb142a1549, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -80,17 +80,16 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &-5687520698747807311
+--- !u!114 &2113999797533450699
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6186572891620150771}
+  m_GameObject: {fileID: 8438632944048608051}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b83f884d504b77543824b023ca9cc913, type: 3}
+  m_Script: {fileID: 11500000, guid: 065c876c0b3c3034ebda9e55d648e2e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionRadius: 1
-  weaponPower: 100
+  flySpeed: 30

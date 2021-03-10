@@ -305,7 +305,7 @@ public class UnitCharacter : MonoBehaviour
 
     private void ReleaseSkillVFX(string vfxGoName)
     {
-        GameWorld.GetInstance().CreateSkillVfxEntities(vfxCount, vfxGoName, attackVFXPos, transform.rotation);
+        GameWorld.GetInstance().CreateSkillVfxEntities(vfxCount, vfxGoName, attackVFXPos.position, transform.rotation);
 
         //GameWorld.GetInstance().CreateSkillVfxEntity(vfxGoName, attackVFXPos, transform.rotation);
     }
