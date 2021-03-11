@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6977700384605634564}
   - component: {fileID: 2953645385145190200}
   - component: {fileID: 8078432003790486290}
+  - component: {fileID: 5587186688520601643}
   m_Layer: 0
   m_Name: Enemy 1
   m_TagString: Untagged
@@ -97,6 +98,20 @@ MonoBehaviour:
   rotateSpeed: 20
   enemyHealth: 20
   collisionRadius: 2.5
+--- !u!114 &5587186688520601643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 857482589856641275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb7243778b318974f8b065dfcda62b61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefabGo: {fileID: 8438632944048608051, guid: a415e44a5f85da740948ac96529c871c,
+    type: 3}
 --- !u!1 &1515394351613234070
 GameObject:
   m_ObjectHideFlags: 0

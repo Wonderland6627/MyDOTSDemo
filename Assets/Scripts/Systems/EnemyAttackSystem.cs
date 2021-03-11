@@ -8,7 +8,6 @@ using Unity.Transforms;
 using Unity.Burst;
 using Unity.Collections;
 
-[DisableAutoCreation]
 public class EnemyAttackSystem : JobComponentSystem
 {
     private BeginInitializationEntityCommandBufferSystem bufferSystem;
@@ -47,12 +46,13 @@ public class EnemyAttackSystem : JobComponentSystem
     }
 
     [BurstCompile]
-    struct AttackJob : IJobForEachWithEntity<EnemyState, Translation, Rotation>
+    struct AttackJob : IJobForEachWithEntity<EnemyState, EnemyBulletSpawnerData, Translation, Rotation>
     {
+        public EntityCommandBuffer.Concurrent concurrent;
         public float deltaTime;
         public Entity bulletEntity;
 
-        public void Execute(Entity entity, int index, ref EnemyState state, ref Translation pos, ref Rotation rot)
+        public void Execute(Entity entity, int index, ref EnemyState state, ref EnemyBulletSpawnerData data, ref Translation pos, ref Rotation rot)
         {
             if (state.BehaviourState != EnemyBehaviourState.Attack)
             {
@@ -64,6 +64,8 @@ public class EnemyAttackSystem : JobComponentSystem
             {
                 state.aimTime = 0;
                 //todo Attack
+                var instance = concurrent.Instantiate(index, data.bulletPrefab);
+                concurrent.DestroyEntity(index, entity);
             }
         }
     }
@@ -79,28 +81,30 @@ public class EnemyAttackSystem : JobComponentSystem
 
         /*AttackJob attackJob = new AttackJob()
         {
+            concurrent = bufferSystem.CreateCommandBuffer().ToConcurrent(),
             deltaTime = Time.DeltaTime,
             bulletEntity = GameWorld.GetInstance().EnemyBullet,
         };*/
 
-        /*var commandBuffer = bufferSystem.CreateCommandBuffer().ToConcurrent();
+        var commandBuffer = bufferSystem.CreateCommandBuffer().ToConcurrent();
 
-        var job = Entities.ForEach((Entity entity, int entityInQueryIndex, ref EnemyState state) =>
+        var job = Entities.ForEach((Entity entity, int entityInQueryIndex, ref EnemyState state, in Translation pos, in Rotation rot, in EnemyBulletSpawnerData data) =>
             {
-                if (state.BehaviourState != EnemyBehaviourState.Attack)
+                if (state.BehaviourState == EnemyBehaviourState.Attack)
                 {
+                    state.aimTime += 0.016f;
+                    if (state.aimTime >= EnemyStateTime.AttackDurationValue)
+                    {
+                        state.aimTime = 0;
+                        //todo Attack
+                        var instance = commandBuffer.Instantiate(entityInQueryIndex, data.bulletPrefab);//通过BufferSystem在Job中添加一个任务，下次执行InitSystem时候检查是否存在任务，存在就执行
+                        commandBuffer.SetComponent(entityInQueryIndex, instance, new Translation() { Value = pos.Value + new float3(0,1,0) });
+                        commandBuffer.SetComponent(entityInQueryIndex, instance, new Rotation() { Value = rot.Value });
+                    }
+                }              
+            }).Schedule(inputDeps);
+        bufferSystem.AddJobHandleForProducer(job);
 
-                }
-
-                state.aimTime += 0.016f;
-                if (state.aimTime >= EnemyStateTime.AttackDurationValue)
-                {
-                    state.aimTime = 0;
-                    //todo Attack
-                }
-                commandBuffer.Instantiate(entityInQueryIndex, entity);
-            }).Schedule(inputDeps);*/
-
-        return default;
+        return job;
     }
 }

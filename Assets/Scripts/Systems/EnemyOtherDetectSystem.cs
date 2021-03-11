@@ -66,8 +66,8 @@ public class EnemyOtherDetectSystem : JobComponentSystem
     struct OtherCollsionJob : IJobChunk
     {
         public float radius;
-        public ArchetypeChunkComponentType<Translation> translationType;
-        public ArchetypeChunkComponentType<Rotation> rotataionType;
+        [ReadOnly] public ArchetypeChunkComponentType<Translation> translationType;
+        [ReadOnly] public ArchetypeChunkComponentType<Rotation> rotataionType;
         public ArchetypeChunkComponentType<EnemyState> enemiesStateType;
 
         [DeallocateOnJobCompletion]
@@ -114,8 +114,8 @@ public class EnemyOtherDetectSystem : JobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        var translationType = GetArchetypeChunkComponentType<Translation>();
-        var rotationType = GetArchetypeChunkComponentType<Rotation>();
+        var translationType = GetArchetypeChunkComponentType<Translation>(true);//参数表示是否ReadOnly
+        var rotationType = GetArchetypeChunkComponentType<Rotation>(true);
         var enemiesStateType = GetArchetypeChunkComponentType<EnemyState>();
 
         StateCollsionJob playerCollisionEnemyJob = new StateCollsionJob//主角和敌人的检测

@@ -75,7 +75,7 @@ public class CollisionDetectSystem : JobComponentSystem
     struct SkillVfxCollsionJob : IJobChunk
     {
         public float radius;
-        public ArchetypeChunkComponentType<Translation> translationType;
+        [ReadOnly] public ArchetypeChunkComponentType<Translation> translationType;
 
         public ArchetypeChunkComponentType<EntityHealth> entitiesHealthType;
 
@@ -113,7 +113,7 @@ public class CollisionDetectSystem : JobComponentSystem
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        var translationType = GetArchetypeChunkComponentType<Translation>();
+        var translationType = GetArchetypeChunkComponentType<Translation>(true);
         var healthType = GetArchetypeChunkComponentType<EntityHealth>();
 
         WeaponCollsionJob weaponCollisionEnemyJob = new WeaponCollsionJob//武器和敌人的检测
