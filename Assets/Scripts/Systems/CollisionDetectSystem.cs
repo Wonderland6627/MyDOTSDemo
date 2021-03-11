@@ -186,8 +186,8 @@ public class CollisionDetectSystem : JobComponentSystem
             otherTranslationsArray = enemyBulletGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
             dangerousArray = enemyBulletGroup.ToComponentDataArray<DangerousGoods>(Allocator.TempJob),
         };
-        denfenceJob.Run(defenceGroup);
-        
+        denfenceJob.Schedule(defenceGroup, inputDeps).Complete();
+
         SkillVfxCollisionJob skillVfxCollisionEnemyJob = new SkillVfxCollisionJob//武器技能和敌人的检测
         {
             radius = 2,

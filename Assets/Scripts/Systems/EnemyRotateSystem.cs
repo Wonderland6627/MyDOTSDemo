@@ -50,8 +50,8 @@ public class EnemyRotateSystem : JobComponentSystem
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         //System.Random rand = new System.Random(DateTime.Now.Second);
-        float randX = UnityEngine.Random.Range(-1024, 1024f);
-        float randZ = UnityEngine.Random.Range(-1024, 1024f);
+        float randX = UnityEngine.Random.Range(-1024, 2048f);
+        float randZ = UnityEngine.Random.Range(-1024, 2048f);
         float3 randPos = new float3(randX, 0, randZ);
 
         RotateJob job = new RotateJob()

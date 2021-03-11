@@ -143,7 +143,7 @@ public class GameWorld : MonoBehaviour
     private Entity CreateWeaponEntity()
     {
         Entity weapon = entityManager.Instantiate(weaponEntity);
-        entityManager.SetName(weapon, "PlayerWeapon");
+        //entityManager.SetName(weapon, "PlayerWeapon");
         entityManager.SetComponentData(weapon, new Translation { Value = Player.weaponPos.position });
         WeaponState weaponState = new WeaponState() { isAttacking = false };
         entityManager.AddComponentData(weapon, weaponState);
@@ -157,7 +157,7 @@ public class GameWorld : MonoBehaviour
     private Entity CreateDefenceEntity()
     {
         Entity defence = entityManager.CreateEntity();
-        entityManager.SetName(defence, "PlayerDefence");
+        //entityManager.SetName(defence, "PlayerDefence");
         entityManager.AddComponent(defence, typeof(DefenceTag));
         entityManager.AddComponent(defence, typeof(Translation));
         entityManager.AddComponentData(defence, new EntityCollision { Radius = 1 });
@@ -208,7 +208,7 @@ public class GameWorld : MonoBehaviour
 
         var entity = GameObjectConversionUtility.ConvertGameObjectHierarchy(vfxPrefab, settings);
         var skillVfx = entityManager.Instantiate(entity);
-        entityManager.SetName(skillVfx, goPrefabName);
+        //entityManager.SetName(skillVfx, goPrefabName);
         entityManager.SetComponentData(skillVfx, new Translation() { Value = startPos });
         entityManager.SetComponentData(skillVfx, new Rotation() { Value = startQuaterion });
 
@@ -264,7 +264,7 @@ public class GameWorld : MonoBehaviour
 
     public string GetEntityName(Entity entity)
     {
-        return entity == null ? "EntityNull" : entityManager.GetName(entity);
+        return entity == null ? "EntityNull" : "DefaultEntity";// entityManager.GetName(entity);
     }
 
     public Vector3 GetCurrentWeaponPos()
