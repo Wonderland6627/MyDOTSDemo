@@ -7,19 +7,19 @@ using Unity.Transforms;
 
 public class EnemyOtherDetectSystem : JobComponentSystem
 {
-    private EntityQuery weaponGroup;
+    private EntityQuery defenceGroup;
     private EntityQuery enemyGroup;
 
     protected override void OnCreate()
     {
         base.OnCreate();
 
-        weaponGroup = GetEntityQuery(typeof(Translation), typeof(EntityCollision), typeof(Rotation), ComponentType.ReadOnly<WeaponState>(), ComponentType.ReadOnly<WeaponTag>());
+        defenceGroup = GetEntityQuery(typeof(EntityHealth), typeof(EntityCollision), typeof(Translation), ComponentType.ReadOnly<DefenceTag>());
         enemyGroup = GetEntityQuery(typeof(EntityHealth), typeof(EntityCollision), typeof(Translation), typeof(Rotation), typeof(EnemyState), ComponentType.ReadOnly<EnemyTag>());
     }
 
     [BurstCompile]
-    struct StateCollsionJob : IJobChunk
+    struct StateCollisionJob : IJobChunk
     {
         [ReadOnly] public float radius;
 
@@ -29,6 +29,8 @@ public class EnemyOtherDetectSystem : JobComponentSystem
 
         [DeallocateOnJobCompletion]
         [ReadOnly] public NativeArray<Translation> otherTranslationsArray;
+        [DeallocateOnJobCompletion]
+        [ReadOnly] public NativeArray<EntityHealth> entityHealthsArray;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
@@ -46,7 +48,9 @@ public class EnemyOtherDetectSystem : JobComponentSystem
 
                 for (int j = 0; j < otherTranslationsArray.Length; j++)
                 {
+                    //EntityHealth defenceHealth = entityHealthsArray[j];
                     Translation pos2 = otherTranslationsArray[j];
+
                     if (MathExtension.CollisionStay(forwardPos, pos2.Value, radius))
                     {
                         state.BehaviourState = EnemyBehaviourState.Attack;
@@ -63,7 +67,7 @@ public class EnemyOtherDetectSystem : JobComponentSystem
     }
 
     [BurstCompile]
-    struct OtherCollsionJob : IJobChunk
+    struct OtherCollisionJob : IJobChunk
     {
         public float radius;
         [ReadOnly] public ArchetypeChunkComponentType<Translation> translationType;
@@ -71,9 +75,7 @@ public class EnemyOtherDetectSystem : JobComponentSystem
         public ArchetypeChunkComponentType<EnemyState> enemiesStateType;
 
         [DeallocateOnJobCompletion]
-        public NativeArray<Translation> otherTranslationsArray;
-        [DeallocateOnJobCompletion]
-        public NativeArray<EnemyState> enemiesStatesArray;
+        [ReadOnly] public NativeArray<Translation> otherTranslationsArray;
 
         public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
         {
@@ -118,25 +120,25 @@ public class EnemyOtherDetectSystem : JobComponentSystem
         var rotationType = GetArchetypeChunkComponentType<Rotation>(true);
         var enemiesStateType = GetArchetypeChunkComponentType<EnemyState>();
 
-        StateCollsionJob playerCollisionEnemyJob = new StateCollsionJob//主角和敌人的检测
+        StateCollisionJob playerCollisionEnemyJob = new StateCollisionJob//主角和敌人的检测
         {
             radius = 5,
             translationType = translationType,
             rotataionType = rotationType,
             enemiesStateType = enemiesStateType,
-            otherTranslationsArray = weaponGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
+            otherTranslationsArray = defenceGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
+            entityHealthsArray = defenceGroup.ToComponentDataArray<EntityHealth>(Allocator.TempJob),
         };
 
         playerCollisionEnemyJob.Schedule(enemyGroup, inputDeps).Complete();
 
-        OtherCollsionJob enemyCollisionEnemyJob = new OtherCollsionJob()//敌人之间距离检测
+        OtherCollisionJob enemyCollisionEnemyJob = new OtherCollisionJob()//敌人之间距离检测
         {
             radius = 2.75f,
             translationType = translationType,
             rotataionType = rotationType,
             enemiesStateType = enemiesStateType,
             otherTranslationsArray = enemyGroup.ToComponentDataArray<Translation>(Allocator.TempJob),
-            enemiesStatesArray = enemyGroup.ToComponentDataArray<EnemyState>(Allocator.TempJob),
         };
 
         return enemyCollisionEnemyJob.Schedule(enemyGroup, inputDeps);

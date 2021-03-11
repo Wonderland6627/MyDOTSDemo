@@ -20,5 +20,7 @@ public class WeaponConversion : MonoBehaviour, IConvertGameObjectToEntity
 
         EntityCollision collision = new EntityCollision() { Radius = collisionRadius };
         dstManager.AddComponentData(entity, collision);
+
+        dstManager.AddComponentData(entity, new DangerousGoods() { power = weaponPower });
     }
 }

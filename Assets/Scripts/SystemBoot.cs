@@ -10,6 +10,9 @@ public class GameInfo
 
     [Header("范围边长")]
     public float rangeLength;
+
+    [Header("启用动画UI")]
+    public bool enableAnimandUI;
 }
 
 public class SystemBoot : MonoBehaviour
@@ -19,5 +22,11 @@ public class SystemBoot : MonoBehaviour
     private void Awake()
     {
         GameWorld.GetInstance().Init(info);
+    }
+
+    private void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

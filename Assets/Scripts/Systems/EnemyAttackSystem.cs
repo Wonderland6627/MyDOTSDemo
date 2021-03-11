@@ -102,7 +102,9 @@ public class EnemyAttackSystem : JobComponentSystem
                         commandBuffer.SetComponent(entityInQueryIndex, instance, new Rotation() { Value = rot.Value });
                     }
                 }              
-            }).Schedule(inputDeps);
+            })
+            .Schedule(inputDeps);
+
         bufferSystem.AddJobHandleForProducer(job);
 
         return job;

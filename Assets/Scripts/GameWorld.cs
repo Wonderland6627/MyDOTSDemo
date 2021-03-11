@@ -49,6 +49,7 @@ public class GameWorld : MonoBehaviour
     #endregion
 
     private UnitCharacter player;
+    
     public UnitCharacter Player
     {
         get
@@ -64,14 +65,16 @@ public class GameWorld : MonoBehaviour
 
             return player;
         }
-    }
-    public Entity CurrentWeapon;
+    }    
+    private static UnitCharacter PlayerStatic;
 
     private GameObject enemyPrefab;
     private GameObject weaponPrefab;
-
+    
     private Entity enemyEntity;
     private Entity weaponEntity;
+    private Entity currentWeapon;
+    private Entity defenceEntity;
 
     private World thisWorld;
     private EntityManager entityManager;
@@ -103,8 +106,14 @@ public class GameWorld : MonoBehaviour
         {
             CreateEnemyEntity();
         }
-        CurrentWeapon = CreateWeaponEntity();
-        CreateDefenceEntity();
+        currentWeapon = CreateWeaponEntity();
+        defenceEntity = CreateDefenceEntity();
+
+        if (info.enableAnimandUI)
+        {
+            PlayerStatic = Player;
+            InitUI();
+        }
     }
 
     /// <summary>
@@ -119,6 +128,13 @@ public class GameWorld : MonoBehaviour
         thisWorld.GetOrCreateSystem<EntityHealthSystem>();
         thisWorld.GetOrCreateSystem<VFXFlyForwardSystem>();
         thisWorld.GetOrCreateSystem<LifeDistanceSystem>();
+    }
+
+    private void InitUI()
+    {
+        var defence = entityManager.GetComponentData<EntityHealth>(defenceEntity);
+        Debug.Log(defence.Value);
+        UIManager.Instance.InitPlayerHPSlider(defence.Value);
     }
 
     /// <summary>
@@ -144,6 +160,9 @@ public class GameWorld : MonoBehaviour
         entityManager.SetName(defence, "PlayerDefence");
         entityManager.AddComponent(defence, typeof(DefenceTag));
         entityManager.AddComponent(defence, typeof(Translation));
+        entityManager.AddComponentData(defence, new EntityCollision { Radius = 1 });
+        entityManager.AddComponentData(defence, new EntityHealth { Value = 500 });
+        entityManager.AddComponentData(defence, new DefencePreData { preValue = 0});
 
         return defence;
     }
@@ -250,25 +269,25 @@ public class GameWorld : MonoBehaviour
 
     public Vector3 GetCurrentWeaponPos()
     {
-        if (CurrentWeapon == null)
+        if (currentWeapon == null)
         {
             return Player.transform.position;
         }
 
-        Translation translation = entityManager.GetComponentData<Translation>(CurrentWeapon);
+        Translation translation = entityManager.GetComponentData<Translation>(currentWeapon);
         return translation.Value;
     }
 
     public void SetCurrentWeaponAttackState(bool isAttaking)
     {
-        if (CurrentWeapon == null)
+        if (currentWeapon == null)
         {
             return;
         }
 
-        WeaponState weaponState = entityManager.GetComponentData<WeaponState>(CurrentWeapon);
+        WeaponState weaponState = entityManager.GetComponentData<WeaponState>(currentWeapon);
         weaponState.isAttacking = isAttaking;
-        entityManager.SetComponentData<WeaponState>(CurrentWeapon, weaponState);
+        entityManager.SetComponentData<WeaponState>(currentWeapon, weaponState);
     }
 
     /// <summary>
@@ -291,6 +310,25 @@ public class GameWorld : MonoBehaviour
 
             animationBlob = blobBuilder.CreateBlobAssetReference<AnimationBlobAsset>(Allocator.Persistent);
         }
+    }
+
+    public static void OnPlayerHPUpdate(float value)
+    {
+        /*if (PlayerStatic == null)
+        {
+            return;
+        }
+
+        if (value <= 0)
+        {
+            PlayerStatic.Death();
+        }
+        else
+        {
+            PlayerStatic.GetHurt();
+        }
+
+        UIManager.Instance.UpdatePlayerHPSlider(value);*/
     }
 
     private void OnGUI()

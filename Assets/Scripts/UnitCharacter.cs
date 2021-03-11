@@ -26,6 +26,10 @@ public class UnitCharacter : MonoBehaviour
     public bool isGrounded = true;//是否站在地上
     [Header("是否冲刺")]
     public bool isSprinting = false;
+    [Header("是否阵亡")]
+    public bool isDeath = false;
+    [Header("受伤状态")]
+    public bool isHurting = false;
 
     [Header("转向速度")]
     public float moveTurnSpeed = 360;
@@ -98,8 +102,31 @@ public class UnitCharacter : MonoBehaviour
         SetupSkillInfos();
     }
 
+    public void Death()
+    {
+        if (!isDeath)
+        {
+            animator.SetTrigger(AnimatorParams.Death);
+            isDeath = true;
+        }
+    }
+
+    public void GetHurt()
+    {
+        if (isHurting)
+        {
+            return;
+        }
+        animator.SetTrigger(AnimatorParams.GetHurt);
+    }
+
     public virtual void MoveCharacter(Vector3 direction, bool jump, bool sprint)
     {
+        if (isDeath)
+        {
+            return;
+        }
+
         if (direction.magnitude > 1)
         {
             direction.Normalize();
@@ -272,6 +299,11 @@ public class UnitCharacter : MonoBehaviour
 
     public void ComboAttack(bool attack, bool heavyAttack)
     {
+        if (isDeath)
+        {
+            return;
+        }
+
         if (attack && inAttackTime < skillsDuration)
         {
             inAttackCombo = true;
@@ -319,6 +351,11 @@ public class UnitCharacter : MonoBehaviour
         GameWorld.GetInstance().SetCurrentWeaponAttackState(isAttacking);
     }
 
+    private void SetHurtingState(string tof)
+    {
+        isHurting = true ? tof == "T" : false;
+    }
+
     #endregion
 }
 
@@ -332,6 +369,9 @@ public static partial class AnimatorParams
 
     public static int HeavyAttack = Animator.StringToHash("HeavyAttack");
     public static int InAttackCombo = Animator.StringToHash("InAttackCombo");
+
+    public static int GetHurt = Animator.StringToHash("GetHurt");
+    public static int Death = Animator.StringToHash("Death");
 
     public const int BaseLayer = 0;
     public const int UpperBodyLayer = 1;

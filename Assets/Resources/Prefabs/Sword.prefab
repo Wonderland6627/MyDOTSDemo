@@ -93,4 +93,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collisionRadius: 1
-  weaponPower: 100
+  weaponPower: 125
